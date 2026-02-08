@@ -1,0 +1,32 @@
+# Node
+node_modules/
+
+# Angular / Ionic
+dist/
+www/
+.angular/
+.cache/
+.vite/
+
+# Capacitor
+android/
+ios/
+
+# Environment files (CRÍTICO)
+src/environments/environment.ts
+src/environments/environment.prod.ts
+.env
+
+# Firebase
+.firebase/
+firestore-debug.log
+firebase-debug.log
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Tests
+coverage/

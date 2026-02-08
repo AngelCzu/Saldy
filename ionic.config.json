@@ -1,0 +1,7 @@
+{
+  "name": "saldy",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

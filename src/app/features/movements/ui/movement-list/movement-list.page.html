@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Movimientos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list >
+
+    <ion-item *ngFor="let movement of movements">
+      <ion-label>
+        <h2>{{ movement.getDescription() }}</h2>
+        <p>{{ movement.getPeriod() }}</p>
+      </ion-label>
+
+      <ion-note
+        slot="end"
+        [color]="movement.isExpense() ? 'danger' : 'success'">
+        {{ movement.getAmount() | number:'1.0-0' }}
+        </ion-note>
+
+    </ion-item>
+
+  </ion-list>
+
+  <ion-spinner *ngIf="loading" class="ion-padding"></ion-spinner>
+
+</ion-content>

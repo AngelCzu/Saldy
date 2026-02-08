@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registrar gasto</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-item>
+    <ion-label position="stacked">Monto</ion-label>
+    <ion-input
+      type="number"
+      [(ngModel)]="amount"
+      placeholder="Ej: 15000">
+    </ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Descripción</ion-label>
+    <ion-input
+      [(ngModel)]="description"
+      placeholder="Ej: Compra supermercado">
+    </ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="stacked">Categoría</ion-label>
+    <ion-input
+      [(ngModel)]="category"
+      placeholder="Ej: Supermercado">
+    </ion-input>
+  </ion-item>
+
+  <ion-button
+    expand="block"
+    class="ion-margin-top"
+    (click)="save()">
+    Guardar gasto
+  </ion-button>
+
+</ion-content>
