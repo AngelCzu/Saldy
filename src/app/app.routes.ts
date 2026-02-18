@@ -8,13 +8,19 @@ import { MovementListPage } from './features/movements/ui/movement-list/movement
 export const routes: Routes = [
   {
     path: '',
-    //edirectTo: 'home',
-    //pathMatch: 'full',
+    redirectTo: 'analysis',
+    pathMatch: 'full',
 
-    component: MovementListPage
+    // Test
+    // component: MovementListPage
   },
   {
     path: 'home',
-    loadComponent: () => import('./features/home/ui/home/home.page').then( m => m.HomePage)
+    loadComponent: () => import('./features/home/ui/home.page').then( m => m.HomePage)
   },
+  {
+    path: 'analysis',
+    loadComponent: () => import('./features/analysis/ui/analysis.page').then( m => m.AnalysisPage)
+  },
+
 ];

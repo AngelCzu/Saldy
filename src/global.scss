@@ -35,3 +35,18 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+  background-color: var(--app-bg-base);
+  font-family: var(--ion-font-family);
+}
+
+ion-content {
+  --background: var(--app-bg-base);
+  background: var(--app-bg-base);
+}
+
+

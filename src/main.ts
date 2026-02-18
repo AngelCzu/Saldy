@@ -15,6 +15,10 @@ import { provideRegisterSharedExpenseUseCase } from './app/core/providers/regist
 import { providePayDebtUseCase } from './app/core/providers/pay-debt.provider';
 import { provideListMovementsUseCase } from './app/core/providers/list-movements';
 
+import { addIcons } from 'ionicons';
+import * as allIcons from 'ionicons/icons';
+
+addIcons(allIcons);
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

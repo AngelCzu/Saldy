@@ -1,0 +1,94 @@
+<ion-content fullscreen>
+  <div class="analysis-page">
+    <!-- Header -->
+    <div class="analysis-header">
+      <!-- Decorative blobs -->
+      <div class="decorative decorative-top"></div>
+      <div class="decorative decorative-bottom"></div>
+
+      <div class="header-content">
+        <div class="header-title">
+          <h1>Análisis de gastos</h1>
+          <p>Visualiza tus patrones financieros</p>
+        </div>
+
+        <!-- Date Range (estático) -->
+        <button class="date-range-card">
+          <div class="date-range-inner">
+            <div class="left">
+              <div class="icon-box">
+                <!-- icono estático -->
+                <ion-icon name="calendar-outline"></ion-icon>
+              </div>
+
+              <div class="text">
+                <span class="label">Período seleccionado</span>
+                <span class="value">Enero 2026</span>
+              </div>
+            </div>
+
+            <div class="chevron">
+              <ion-icon name="chevron-forward-outline"></ion-icon>
+            </div>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+
+    <!-- Content -->
+    <div class="analysis-content">
+
+      <!-- Trend Chart -->
+      <div class="trend-card">
+        <h2 class="title">Evolución acumulada del gasto – Enero 2026 </h2>
+
+        <div class="chart-wrapper">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Distribución de gastos -->
+      <div class="expense-card">
+
+        <div class="expense-card__header">
+          <h3 class="title">Distribución de gastos - Enero 2026</h3>
+        </div>
+
+        <div class="expense-card__body">
+          <!-- Chart -->
+          <div class="expense-card__chart">
+            <canvas id="expensesChart"></canvas>
+          </div>
+
+          <!-- Leyenda -->
+<div class="expense-card__legend">
+  <div
+    class="legend-item"
+    *ngFor="let category of categories; let i = index"
+  >
+    <span
+      class="dot"
+      [style.backgroundColor]="category.color"
+    ></span>
+
+    <span class="label">
+      {{ category.name }}
+    </span>
+
+    <span class="value">
+      {{ category.percentage }}%
+    </span>
+  </div>
+</div>
+
+
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+</ion-content>

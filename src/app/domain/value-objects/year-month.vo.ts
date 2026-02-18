@@ -63,6 +63,49 @@ export class YearMonth {
   }
 
 
+  // ======================
+  // COMPARACIÓN AVANZADA
+  // ======================
+
+  isAfter(other: YearMonth): boolean {
+    if (this.year > other.year) return true;
+    if (this.year === other.year && this.month > other.month) return true;
+    return false;
+  }
+
+  isBefore(other: YearMonth): boolean {
+    if (this.year < other.year) return true;
+    if (this.year === other.year && this.month < other.month) return true;
+    return false;
+  }
+
+  isAfterOrEqual(other: YearMonth): boolean {
+    return this.equals(other) || this.isAfter(other);
+  }
+
+  isBeforeOrEqual(other: YearMonth): boolean {
+    return this.equals(other) || this.isBefore(other);
+  }
+
+
+  // ======================
+  // NAVEGACIÓN TEMPORAL
+  // ======================
+
+  next(): YearMonth {
+    if (this.month === 12) {
+      return new YearMonth(this.year + 1, 1);
+    }
+    return new YearMonth(this.year, this.month + 1);
+  }
+
+  previous(): YearMonth {
+    if (this.month === 1) {
+      return new YearMonth(this.year - 1, 12);
+    }
+    return new YearMonth(this.year, this.month - 1);
+  }
+
 
 
   // ======================
@@ -80,4 +123,12 @@ export class YearMonth {
       throw new Error(`Mes inválido: ${month}`);
     }
   }
+
+  diffInMonths(other: YearMonth): number {
+  return (
+    (other.year - this.year) * 12 +
+    (other.month - this.month)
+  );
+}
+
 }

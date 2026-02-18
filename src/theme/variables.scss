@@ -1,2 +1,25 @@
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/
+:root {
+  /* === Brand Base === */
+  --app-bg-base: #f9fafb; // color base app
+  --saldy-bg-surface: #162b24; // cards / surfaces
+  --saldy-text-primary: #e6f4ef;
+  --saldy-text-secondary: #9fbdb3;
+
+  /* Ionic overrides */
+  --ion-background-color: var(--app-bg-base);
+  --ion-text-color: var(--saldy-text-primary);
+
+  --ion-color-primary: #2ecc9f;
+  --ion-color-primary-contrast: #0f1f1a;
+   --ion-font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+}
+
+/* Anulamos dark mode del sistema */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-background-color: var(--app-bg-base);
+  }
+}

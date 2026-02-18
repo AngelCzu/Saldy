@@ -1,0 +1,124 @@
+<ion-content fullscreen>
+  <!-- Header -->
+  <div class="home-header">
+    <div class="home-header__container">
+
+      <div class="home-header__top">
+        <div class="home-header__greeting">
+          <p class="home-header__hello">Hola,</p>
+          <h1 class="home-header__name">Juan Pérez</h1>
+        </div>
+
+        <div class="home-header__avatar">
+          <span className="text-xl">👋</span>
+        </div>
+      </div>
+
+      <!-- Resumen mensual -->
+      <div class="home-header__summary">
+        <p class="home-header__label">Saldo disponible</p>
+        <h2 class="home-header__balance">$850.000</h2>
+
+        <div class="home-header__stats">
+          <div class="home-header__stat">
+            <div class="home-header__stat-title">
+              <span class="icon">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </span>
+              <p>Ingresos</p>
+            </div>
+            <p class="home-header__stat-value">$1.500.000</p>
+            <p class="home-header__stat-change">
+              +5% al mes anterior
+            </p>
+          </div>
+
+          <div class="home-header__stat">
+            <div class="home-header__stat-title">
+              <span class="icon">
+                <ion-icon name="trending-down-outline"></ion-icon>
+              </span>
+              <p>Gastos</p>
+            </div>
+            <p class="home-header__stat-value">$650.000</p>
+            <p class="home-header__stat-change">
+              -12% al mes anterior
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Contenido -->
+  <div class="home-content">
+
+    <!-- Distribución de gastos -->
+    <div class="expense-card">
+
+      <div class="expense-card__header">
+        <h3 class="expense-card__title">Distribución de gastos</h3>
+        <button class="expense-card__link">Ver más</button>
+      </div>
+
+      <div class="expense-card__body">
+        <!-- Chart -->
+        <div class="expense-card__chart">
+          <canvas id="expensesChart"></canvas>
+        </div>
+
+        <!-- Leyenda -->
+        <div class="expense-card__legend">
+          <div class="legend-item">
+            <span class="dot food"></span>
+            <span class="label">Comidas Fuera</span>
+            <span class="value">40%</span>
+          </div>
+
+          <div class="legend-item">
+            <span class="dot transport"></span>
+            <span class="label">Ropa</span>
+            <span class="value">25%</span>
+          </div>
+
+          <div class="legend-item">
+            <span class="dot services"></span>
+            <span class="label">Servicios</span>
+            <span class="value">20%</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Accesos rápidos -->
+    <div class="quick-actions">
+      
+      <button class="quick-action-card">
+        <div class="container">
+          <div class="quick-action-card__icon">
+            <ion-icon name="wallet-outline"></ion-icon>
+          </div>
+        </div>
+
+        <p class="quick-action-card__title">Mis Metas</p>
+        <p class="quick-action-card__subtitle">3 activas</p>
+      </button>
+
+      <button class="quick-action-card">
+        <div class="container">
+          <div class="quick-action-card__icon">
+            <ion-icon name="trending-up-outline"></ion-icon>
+          </div>
+        </div>
+
+        <p class="quick-action-card__title">Deudores</p>
+        <p class="quick-action-card__subtitle">2 pendientes</p>
+      </button>
+
+    </div>
+
+
+  </div>
+</ion-content>

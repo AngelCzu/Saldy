@@ -1,0 +1,328 @@
+.analysis-page {
+  padding-bottom: 1.5rem; // pb-6
+}
+
+
+
+
+// HEADER
+
+.analysis-header {
+  position: relative;
+  padding: 3rem 1.5rem 2rem;
+  background: linear-gradient(
+    135deg,
+    #f9fafb,
+    #ffffff,
+    #f3f4f6
+  );
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+/* Decorative blobs */
+.decorative {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(48px);
+  pointer-events: none;
+}
+
+.decorative-top {
+  top: 0;
+  right: 0;
+  width: 16rem;
+  height: 16rem;
+  background: rgba(13, 148, 136, 0.05);
+  transform: translate(8rem, -8rem);
+}
+
+.decorative-bottom {
+  bottom: 0;
+  left: 0;
+  width: 12rem;
+  height: 12rem;
+  background: rgba(13, 148, 136, 0.03);
+  transform: translate(-6rem, 6rem);
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
+}
+
+.header-title {
+  margin-bottom: 1.5rem;
+
+  h1 {
+    font-size: 1.5rem;
+    color: #111827;
+    margin: 0 0 0.25rem;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+/* Date Range Card */
+.date-range-card {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.date-range-card:active {
+  transform: scale(0.99);
+}
+
+.date-range-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.icon-box {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(
+    135deg,
+    #0d9488,
+    rgba(13, 148, 136, 0.8)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+  ion-icon {
+    font-size: 1.5rem;
+    color: white;
+  }
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.value {
+  font-size: 0.875rem;
+  color: #111827;
+  font-weight: 500;
+}
+
+.chevron {
+  width: 2rem;
+  height: 2rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 1rem;
+    color: #6b7280;
+  }
+}
+
+
+
+//  CONTENT
+.analysis-content {
+  padding: 0.5rem 1.5rem 0;
+
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; // space-y-6
+}
+
+
+/* Trend Chart */
+.chart-wrapper {
+  height: 180px;
+}
+
+.trend-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.chart-container {
+  height: 180px;
+  margin-bottom: 0.75rem;
+}
+
+.chart-svg {
+  width: 100%;
+  height: 100%;
+
+  line {
+    stroke: #f3f4f6;
+    stroke-dasharray: 3 3;
+  }
+
+  .chart-line {
+    fill: none;
+    stroke: #0d9488;
+    stroke-width: 2;
+  }
+
+  circle {
+    fill: #0d9488;
+  }
+}
+
+.x-axis {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0.25rem;
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+
+
+// Card Chart
+.expense-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.25rem;
+}
+
+.expense-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  height: 100%;
+}
+
+.expense-card__title {
+  font-size: 1.125rem; // text-lg
+  font-weight: 600;
+  color: #111827; // gray-900
+  margin: 0;
+}
+
+.expense-card__link {
+  background: none;
+  border: none;
+  color: #0d9488;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0;
+}
+
+.expense-card__body {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ---- Donut chart mock ---- */
+.expense-card__chart {
+  width: 8rem;
+  height: 8rem;
+}
+
+
+
+/* ---- Leyenda ---- */
+.expense-card__legend {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-item .dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.dot.Comidas_Fuera {
+  background: #0D9488;
+}
+
+.dot.Ropa {
+  background: #2563EB;
+}
+
+.dot.Bencina {
+  background: #7C3AED;
+}
+
+.dot.Servicios {
+  background: #0891B2;
+}
+
+.dot.Deudas_Mensuales {
+  background: #F59E0B;
+}
+
+.dot.Compras {
+  background: #DB2777;
+}
+
+.dot.Otros {
+  background: #6B7280;
+}
+.legend-item .label {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #4b5563; // gray-600
+}
+
+.legend-item .value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827; // gray-900
+}
