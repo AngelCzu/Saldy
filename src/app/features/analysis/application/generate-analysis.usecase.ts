@@ -30,7 +30,7 @@ export class GenerateAnalysisUseCase {
     return {
       trend: {
         labels: ['Día 1–7', 'Día 8–14', 'Día 15–21', 'Día 22–Fin Mes'],
-        income: [1000, 1200, 1500, 2000],
+        income: [750000, 750000, 775000, 777000],
         expenses: [200000, 285000, 300000, 390000]
       },
       distribution: [

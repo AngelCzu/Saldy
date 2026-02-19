@@ -15,8 +15,13 @@ import { provideRegisterSharedExpenseUseCase } from './app/core/providers/regist
 import { providePayDebtUseCase } from './app/core/providers/pay-debt.provider';
 import { provideListMovementsUseCase } from './app/core/providers/list-movements';
 
+// Importaciones iconos ionic
 import { addIcons } from 'ionicons';
 import * as allIcons from 'ionicons/icons';
+
+// Importaciones de Chart
+import './app/core/chart/chart-setup';
+
 
 addIcons(allIcons);
 bootstrapApplication(AppComponent, {

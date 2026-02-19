@@ -1,0 +1,27 @@
+<div class="range-container">
+
+  <div>
+    <label>Desde</label>
+    <select [(ngModel)]="fromMonth">
+      <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">
+        {{ m }}
+      </option>
+    </select>
+
+    <input type="number" [(ngModel)]="fromYear">
+  </div>
+
+  <div>
+    <label>Hasta</label>
+    <select [(ngModel)]="toMonth">
+      <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">
+        {{ m }}
+      </option>
+    </select>
+
+    <input type="number" [(ngModel)]="toYear">
+  </div>
+
+  <button (click)="apply()">Aplicar</button>
+
+</div>
