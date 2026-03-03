@@ -1,6 +1,7 @@
 import { DateRange } from 'src/app/domain/value-objects/date-range.vo';
 import { YearMonth } from 'src/app/domain/value-objects/year-month.vo';
 import { SYSTEM_CATEGORY_COLORS } from 'src/app/domain/value-objects/system-categories';
+import { Injectable } from '@angular/core';
 export interface AnalysisResult {
   trend: {
     labels: string[];
@@ -14,6 +15,9 @@ export interface AnalysisResult {
   }[];
 }
 
+@Injectable({
+  providedIn: 'root'
+})
 export class GenerateAnalysisUseCase {
 
   execute(range: DateRange): AnalysisResult {

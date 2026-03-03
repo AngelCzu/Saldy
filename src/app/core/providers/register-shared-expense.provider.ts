@@ -15,18 +15,14 @@ export function provideRegisterSharedExpenseUseCase() {
   const firestore = inject(Firestore);
   const session = inject(SessionService);
 
-  // Test: ensure a userId is set before building the use case
-  if (!session.isAuthenticated()) {
-    session.setUserId('user-demo-001');
-  }
 
-  const datasource = new FirestoreDatasource(firestore);
-  const userId = session.getUserId();
+
+  const datasource = new FirestoreDatasource(firestore, session);
 
   return new RegisterSharedExpenseUseCase(
-    new FirestoreMovementRepository(datasource, userId),
-    new FirestoreDebtRepository(datasource, userId),
-    new FirestoreMonthlyPeriodRepository(datasource, userId),
+    new FirestoreMovementRepository(datasource),
+    new FirestoreDebtRepository(datasource),
+    new FirestoreMonthlyPeriodRepository(datasource),
     new FirestoreTimeProvider()
   );
 }

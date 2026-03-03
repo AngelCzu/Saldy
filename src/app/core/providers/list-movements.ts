@@ -12,10 +12,9 @@ export function provideListMovementsUseCase() {
   const firestore = inject(Firestore);
   const session = inject(SessionService);
 
-  const datasource = new FirestoreDatasource(firestore);
-  const userId = session.getUserId();
+  const datasource = new FirestoreDatasource(firestore, session);
   
-  const movementRepo = new FirestoreMovementRepository(datasource, userId);
+  const movementRepo = new FirestoreMovementRepository(datasource);
   const timeProvider = new FirestoreTimeProvider();
 
   return new ListMovementsUseCase(movementRepo, timeProvider);

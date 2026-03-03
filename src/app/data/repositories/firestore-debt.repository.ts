@@ -1,20 +1,15 @@
 import { collection, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import { getDocs, query, where } from '@angular/fire/firestore';
 import { DebtRepository } from 'src/app/domain/repositories/debt.repository';
 import { Debt } from 'src/app/domain/entities/debt.entity';
 import { FirestoreDatasource } from '../datasources/firestore.datasource';
 import { DebtMapper } from '../mappers/debt.mapper';
 
 export class FirestoreDebtRepository implements DebtRepository {
-  constructor(
-    private readonly datasource: FirestoreDatasource,
-    private readonly userId: string
-  ) {}
+  constructor(private readonly datasource: FirestoreDatasource) {}
 
   async findById(id: string): Promise<Debt | null> {
-    const ref = doc(
-      this.datasource.db,
-      `usuarios/${this.userId}/deudas/${id}`
-    );
+    const ref = this.datasource.userDoc(`deudas/${id}`);
 
     const snapshot = await getDoc(ref);
 
@@ -25,9 +20,20 @@ export class FirestoreDebtRepository implements DebtRepository {
 
   async save(debt: Debt): Promise<void> {
     const ref = debt.getId()
-      ? doc(this.datasource.db, `usuarios/${this.userId}/deudas/${debt.getId()}`)
-      : doc(collection(this.datasource.db, `usuarios/${this.userId}/deudas`));
+      ? this.datasource.userDoc(`deudas/${debt.getId()}`)
+      : doc(this.datasource.userCollection('deudas'));
 
     await setDoc(ref, DebtMapper.toFirestore(debt));
   }
+
+  async countPending(): Promise<number> {
+    const q = query(
+      this.datasource.userCollection('deudas'),
+      where('pendiente', '==', true)
+    );
+
+    const snapshot = await getDocs(q);
+    return snapshot.size;
+  }
+
 }

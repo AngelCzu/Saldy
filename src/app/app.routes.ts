@@ -1,26 +1,31 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from './core/auth/auth.guard';
+import { GuestGuard } from './core/auth/auth.guest-guard';
 
 
-//Test
-import { RegisterExpensePage } from './features/movements/ui/register-expense/register-expense.page';
-import { MovementListPage } from './features/movements/ui/movement-list/movement-list.page';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'analysis',
+    redirectTo: 'home',
     pathMatch: 'full',
 
-    // Test
-    // component: MovementListPage
   },
   {
     path: 'home',
+    canActivate: [AuthGuard],
     loadComponent: () => import('./features/home/ui/home.page').then( m => m.HomePage)
   },
   {
     path: 'analysis',
+    canActivate: [AuthGuard],
     loadComponent: () => import('./features/analysis/ui/analysis.page').then( m => m.AnalysisPage)
   },
+  {
+    path: 'login',
+    canActivate: [GuestGuard],
+    loadComponent: () => import('./features/auth/login/ui/login.page').then( m => m.LoginPage)
+  },
+
 
 ];

@@ -34,4 +34,18 @@ export class DoughnutChartBuilder {
     });
 
   }
+
+  static update(
+    chart: Chart<'doughnut'>,
+    data: DoughnutChartData
+  ): void {
+
+    chart.data.labels = data.labels;
+
+    chart.data.datasets[0].data = data.values;
+    chart.data.datasets[0].backgroundColor = data.colors;
+
+    chart.update();
+
+  }
 }

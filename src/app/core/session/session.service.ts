@@ -1,29 +1,48 @@
 // Sesion de usuarios 
 
 import { Injectable } from '@angular/core';
+import { Auth, onAuthStateChanged, User } from '@angular/fire/auth';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SessionService {
-  private userId: string | null = null;
+  private _user = new BehaviorSubject<User | null>(null);
+  private _authInitialized = new BehaviorSubject<boolean>(false);
 
-  setUserId(userId: string): void {
-    this.userId = userId;
+  readonly user$ = this._user.asObservable();
+  readonly authInitialized$ = this._authInitialized.asObservable();
+
+  constructor(private auth: Auth) {
+
+    onAuthStateChanged(this.auth, (user) => {
+      this._user.next(user);
+      this._authInitialized.next(true);
+    });
+
+  }
+
+  get currentUser(): User | null {
+    return this._user.value;
   }
 
   getUserId(): string {
-    if (!this.userId) {
+    const user = this.currentUser;
+    if (!user) {
       throw new Error('No hay sesión activa');
     }
-    return this.userId;
+    return user.uid;
   }
 
   isAuthenticated(): boolean {
-    return this.userId !== null;
+    return this.currentUser !== null;
   }
 
-  clear(): void {
-    this.userId = null;
+  logout(): Promise<void> {
+    return this.auth.signOut();
   }
+
+
+
 }

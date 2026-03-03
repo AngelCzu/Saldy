@@ -1,0 +1,154 @@
+.login-content {
+  --background: var(--app-bg-base);
+}
+
+/* HEADER */
+.login-header {
+  background: linear-gradient(
+    to bottom,
+    #0d9488,
+    #14b8a6
+  );
+
+  padding: 60px 24px 40px 24px;
+  border-bottom-left-radius: 28px;
+  border-bottom-right-radius: 28px;
+  text-align: center;
+  color: white;
+}
+
+.logo-box {
+  width: 64px;
+  height: 64px;
+  background: white;
+  border-radius: 16px;
+  margin: 0 auto 16px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: bold;
+  color: #0d9488;
+}
+
+.login-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.login-header p {
+  margin-top: 8px;
+  opacity: 0.9;
+}
+
+/* FORM */
+.login-form {
+  padding: 32px 24px;
+}
+
+/* INPUTS */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* 1. Aseguramos que el icono sea visible por defecto */
+.input-wrapper ion-icon {
+  font-size: 20px;
+  color: #9ca3af !important; /* Gris intermedio visible */
+  margin-right: 4px;
+  z-index: 2; /* Lo trae al frente */
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* 2. El contenedor (Wrapper) */
+.input-wrapper {
+  position: relative;
+  background: #ffffff; /* Blanco sólido */
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  transition: all 0.2s ease-in-out;
+  overflow: hidden; /* Evita que el input tape el icono */
+}
+
+/* 3. ESTADO SELECCIONADO (Focus) */
+.input-wrapper:focus-within {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+  background: #fdfdfd; /* Un blanco casi imperceptiblemente distinto */
+}
+
+/* 4. El icono cambia a verde solo cuando hay foco */
+.input-wrapper:focus-within ion-icon {
+  color: #0d9488 !important;
+  opacity: 1;
+}
+
+/* 5. Ajuste del Input para que no "empuje" al icono */
+.input-wrapper ion-input {
+  flex: 1;
+  --padding-start: 8px;
+  color: #8f8f8f; /* Texto gris mientras no escriben */
+}
+
+.input-wrapper ion-input.has-focus,
+.input-wrapper ion-input.has-value {
+  color: #000000; /* Negro al escribir */
+}
+
+.eye {
+  cursor: pointer;
+}
+
+/* LINKS */
+.forgot {
+  text-align: right;
+  font-size: 14px;
+  color: #0d9488;
+  margin-bottom: 24px;
+}
+
+/* BUTTONS */
+.btn-login {
+  --background: #0d9488;
+  --border-radius: 14px;
+  height: 50px;
+  margin-bottom: 16px;
+  color: #ffff;
+}
+
+.btn-login:hover {
+  --background: #0f766e;
+}
+
+.google-btn {
+  --border-color: gray;
+  --border-radius: 14px;
+  --background: #ffff;
+  height: 50px;
+  color: black
+}
+
+.register {
+  text-align: center;
+  margin-top: 32px;
+  color: #6b7280;
+}
+
+.register span {
+  color: #0d9488;
+  font-weight: 500;
+  padding-left: 0.2rem;
+}

@@ -6,7 +6,7 @@ import { DoughnutChartBuilder } from 'src/app/core/chart/doughnut-chart.builder'
 import { GenerateAnalysisUseCase } from '../application/generate-analysis.usecase';
 import { DateRange } from 'src/app/domain/value-objects/date-range.vo';
 import { YearMonth } from 'src/app/domain/value-objects/year-month.vo';
-import { DateRangeSelectorComponent } from '../shared/components/date-range-selector/date-range-selector.component';
+
 import { Chart } from 'chart.js';
 
 
@@ -15,7 +15,7 @@ import { Chart } from 'chart.js';
   templateUrl: './analysis.page.html',
   styleUrls: ['./analysis.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonIcon, IonContent, DateRangeSelectorComponent],
+  imports: [CommonModule, IonIcon, IonContent],
 })
 export class AnalysisPage implements OnInit {
 

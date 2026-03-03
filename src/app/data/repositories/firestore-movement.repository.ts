@@ -1,4 +1,4 @@
-import { addDoc, collection, getDocs, orderBy, query, where } from '@angular/fire/firestore';
+import { addDoc, getDocs, orderBy, query, where } from '@angular/fire/firestore';
 import { MovementRepository } from 'src/app/domain/repositories/movement.repository';
 import { Movement } from 'src/app/domain/entities/movement.entity';
 import { FirestoreDatasource } from '../datasources/firestore.datasource';
@@ -6,14 +6,11 @@ import { MovementMapper } from '../mappers/movement.mapper';
 import { YearMonth } from 'src/app/domain/value-objects/year-month.vo';
 
 export class FirestoreMovementRepository implements MovementRepository {
-  constructor(
-    private readonly datasource: FirestoreDatasource,
-    private readonly userId: string
-  ) {}
+  constructor(private readonly datasource: FirestoreDatasource) {}
 
   async save(movement: Movement): Promise<string> {
     const ref = await addDoc(
-      collection(this.datasource.db, `usuarios/${this.userId}/movimientos`),
+      this.datasource.userCollection('movimientos'),
       MovementMapper.toFirestore(movement)
     );
 
@@ -21,17 +18,17 @@ export class FirestoreMovementRepository implements MovementRepository {
   }
 
   async findByPeriod(yearMonth: YearMonth): Promise<Movement[]> {
-  const q = query(
-    collection(this.datasource.db, `usuarios/${this.userId}/movimientos`),
-    where('periodo', '==', yearMonth.toString()),
-    orderBy('creadoEn', 'desc')
-  );
+    const q = query(
+      this.datasource.userCollection('movimientos'),
+      where('periodo', '==', yearMonth.toString()),
+      orderBy('creadoEn', 'desc')
+    );
 
-  const snapshot = await getDocs(q);
+    const snapshot = await getDocs(q);
 
-  return snapshot.docs.map(doc =>
-    MovementMapper.fromFirestore(doc.id, doc.data())
-  );
-}
+    return snapshot.docs.map(doc =>
+      MovementMapper.fromFirestore(doc.id, doc.data())
+    );
+  }
 
 }

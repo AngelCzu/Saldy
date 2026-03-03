@@ -9,11 +9,8 @@ import { environment } from './environments/environment';
 // Firebase / FireStore
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { provideAuth, getAuth } from '@angular/fire/auth';
 
-// Importaciones casos de uso
-import { provideRegisterSharedExpenseUseCase } from './app/core/providers/register-shared-expense.provider';
-import { providePayDebtUseCase } from './app/core/providers/pay-debt.provider';
-import { provideListMovementsUseCase } from './app/core/providers/list-movements';
 
 // Importaciones iconos ionic
 import { addIcons } from 'ionicons';
@@ -22,6 +19,11 @@ import * as allIcons from 'ionicons/icons';
 // Importaciones de Chart
 import './app/core/chart/chart-setup';
 
+//Importaciones de tokens
+import { AUTO_CLOSE_PERIOD, AUTH_REPOSITORY } from './app/core/providers/tokens';
+import { provideAutoCloseMonthlyPeriodUseCase } from './app/core/providers/auto-close-monthly-period.provider';
+import { FirebaseAuthRepository } from './app/data/repositories/firebase-auth.repository';
+
 
 addIcons(allIcons);
 bootstrapApplication(AppComponent, {
@@ -29,23 +31,19 @@ bootstrapApplication(AppComponent, {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideRouter(routes, withPreloading(PreloadAllModules)),
 
-    
-    // Test Casos de Usos
-     {
-      provide: 'REGISTER_SHARED_EXPENSE',
-      useFactory: provideRegisterSharedExpenseUseCase,
+
+    {
+      provide: AUTO_CLOSE_PERIOD,
+      useFactory: provideAutoCloseMonthlyPeriodUseCase
     },
     {
-      provide: 'PAY_DEBT',
-      useFactory: providePayDebtUseCase,
-    },
-    {
-      provide: 'LIST_MOVEMENTS',
-      useFactory: provideListMovementsUseCase,
-    },
+      provide: AUTH_REPOSITORY,
+      useClass: FirebaseAuthRepository
+    }
   ],
   
 });

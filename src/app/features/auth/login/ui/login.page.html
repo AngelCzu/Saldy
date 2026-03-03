@@ -1,0 +1,80 @@
+<ion-content [fullscreen]="true" class="login-content">
+
+  <!-- HEADER -->
+  <div class="login-header">
+    <div class="logo-box">
+      <ion-icon name="wallet"></ion-icon>
+    </div>
+
+    <h1>Saldy</h1>
+    <p>Tu asistente financiero de confianza</p>
+  </div>
+
+  <!-- FORM -->
+  <div class="login-form">
+
+    <!-- EMAIL -->
+    <div class="input-group">
+      <label>Correo electrónico</label>
+      <div class="input-wrapper">
+        <ion-icon name="mail-outline"></ion-icon>
+        <ion-input
+          type="email"
+          [(ngModel)]="email"
+          placeholder="tu@email.com"
+        ></ion-input>
+      </div>
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="input-group">
+      <label>Contraseña</label>
+      <div class="input-wrapper">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+
+        <ion-input
+          [type]="showPassword ? 'text' : 'password'"
+          [(ngModel)]="password"
+          placeholder="••••••••"
+        ></ion-input>
+
+        <ion-icon
+          class="eye"
+          [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+          (click)="togglePassword()"
+        ></ion-icon>
+      </div>
+    </div>
+
+    <div class="forgot">
+      ¿Olvidaste tu contraseña?
+    </div>
+
+    <ion-button expand="block" class="btn-login" (click)="login()">
+      Iniciar Sesión
+    </ion-button>
+
+    <ion-button expand="block" fill="outline" class="google-btn">
+      <!-- SVG Google -->
+       <svg  width="20" height="20" viewBox="0 0 48 48">
+          <path fill="#EA4335"
+            d="M24 9.5c3.2 0 6.1 1.1 8.4 3.2l6.3-6.3C34.7 2.3 29.7 0 24 0 14.6 0 6.5 5.5 2.6 13.4l7.4 5.7C12.1 13.3 17.5 9.5 24 9.5z"/>
+          <path fill="#4285F4"
+            d="M46.1 24.5c0-1.6-.1-3.1-.4-4.6H24v8.7h12.5c-.5 2.8-2 5.2-4.3 6.8l6.7 5.2c3.9-3.6 6.2-9 6.2-15.1z"/>
+          <path fill="#FBBC05"
+            d="M10 28.7c-1-2.8-1-5.9 0-8.7l-7.4-5.7C.9 17.7 0 20.8 0 24s.9 6.3 2.6 9.7l7.4-5z"/>
+          <path fill="#34A853"
+            d="M24 48c6.5 0 12-2.1 16-5.8l-6.7-5.2c-1.9 1.3-4.4 2.1-9.3 2.1-6.5 0-11.9-3.8-14-9.1l-7.4 5C6.5 42.5 14.6 48 24 48z"/>
+        </svg>
+
+      <span style="padding-left: 0.5rem;">Continuar con Google</span>
+    </ion-button>
+
+    <div class="register">
+      ¿No tienes cuenta?
+      <span>Regístrate</span>
+    </div>
+
+  </div>
+
+</ion-content>
