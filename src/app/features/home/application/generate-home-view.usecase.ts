@@ -1,8 +1,10 @@
 import { Movement } from 'src/app/domain/entities/movement.entity';
 import { ListMovementsUseCase } from 'src/app/features/movements/application/list-movements.usecase';
 import { AutoCloseMonthlyPeriodUseCase } from 'src/app/features/periods/application/auto-close-monthly-period.usecase';
+import { Injectable } from '@angular/core';
 
 export interface HomeSummary {
+  hasMovements: boolean;
   movements: Movement[];
   totalIncome: number;
   totalExpense: number;
@@ -10,6 +12,9 @@ export interface HomeSummary {
   categoryDistribution: Record<string, number>;
 }
 
+
+
+@Injectable({ providedIn: 'root' })
 export class GenerateHomeViewUseCase {
 
   constructor(
@@ -17,39 +22,47 @@ export class GenerateHomeViewUseCase {
     private readonly autoClose: AutoCloseMonthlyPeriodUseCase
   ) {}
 
-    async execute(): Promise<HomeSummary> {
+  async execute(): Promise<HomeSummary> {
 
+    // asegura cierre automático del periodo si cambió el mes
     await this.autoClose.execute();
 
     const movements = await this.listMovements.execute();
 
-    const totalIncome = movements
-        .filter(m => m.isIncome())
-        .reduce((acc, m) => acc + m.getAmount(), 0);
-
-    const totalExpense = movements
-        .filter(m => m.isExpense())
-        .reduce((acc, m) => acc + m.getAmount(), 0);
-
-    const balance = totalIncome - totalExpense;
+    let totalIncome = 0;
+    let totalExpense = 0;
 
     const categoryDistribution: Record<string, number> = {};
 
     for (const movement of movements) {
-        if (movement.isExpense()) {
+
+      const amount = movement.getAmount();
+
+      if (movement.isIncome()) {
+        totalIncome += amount;
+        continue;
+      }
+
+      if (movement.isExpense()) {
+
+        totalExpense += amount;
+
         const category = movement.getCategory() ?? 'OTROS';
 
         categoryDistribution[category] =
-            (categoryDistribution[category] ?? 0) + movement.getAmount();
-        }
+          (categoryDistribution[category] ?? 0) + amount;
+      }
     }
 
+    const balance = totalIncome - totalExpense;
+
     return {
-        movements,
-        totalIncome,
-        totalExpense,
-        balance,
-        categoryDistribution
+      hasMovements: movements.length > 0,
+      movements,
+      totalIncome,
+      totalExpense,
+      balance,
+      categoryDistribution
     };
-    }
+  }
 }

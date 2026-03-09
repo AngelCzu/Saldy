@@ -1,14 +1,25 @@
 import { InjectionToken } from '@angular/core';
-import { AutoCloseMonthlyPeriodUseCase } from
-'src/app/features/periods/application/auto-close-monthly-period.usecase';
 import { AuthRepository } from 'src/app/domain/repositories/auth.repository';
-
-export const AUTO_CLOSE_PERIOD =
-  new InjectionToken<AutoCloseMonthlyPeriodUseCase>(
-    'AUTO_CLOSE_PERIOD'
-  );
+import { DebtRepository } from 'src/app/domain/repositories/debt.repository';
+import { MovementRepository } from 'src/app/domain/repositories/movement.repository';
+import { MonthlyPeriodRepository } from 'src/app/domain/repositories/monthly-period.repository';
 
 export const AUTH_REPOSITORY =
   new InjectionToken<AuthRepository>(
     'AUTH_REPOSITORY'
+  );
+
+export const MOVEMENT_REPOSITORY =
+  new InjectionToken<MovementRepository>(
+    'MOVEMENT_REPOSITORY'
+  );
+
+export const DEBT_REPOSITORY =
+  new InjectionToken<DebtRepository>(
+    'DEBT_REPOSITORY'
+  );
+
+export const MONTHLY_PERIOD_REPOSITORY =
+  new InjectionToken<MonthlyPeriodRepository>(
+    'MONTHLY_PERIOD_REPOSITORY'
   );

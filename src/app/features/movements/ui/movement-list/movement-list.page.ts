@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 
@@ -17,11 +17,7 @@ export class MovementListPage {
 
   movements: Movement[] = [];
   loading = true;
-
-  constructor(
-    @Inject('LIST_MOVEMENTS')
-    private listMovements: ListMovementsUseCase
-  ) {}
+  private readonly listMovements = inject(ListMovementsUseCase);
 
     async ionViewWillEnter() {
         this.loading = true;

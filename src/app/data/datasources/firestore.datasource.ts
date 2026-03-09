@@ -1,8 +1,10 @@
 //Conexión FireBase
 
+import { Injectable } from '@angular/core';
 import { Firestore, collection, doc } from '@angular/fire/firestore';
 import { SessionService } from 'src/app/core/session/session.service';
 
+@Injectable({ providedIn: 'root' })
 export class FirestoreDatasource {
   constructor(
     public readonly db: Firestore,

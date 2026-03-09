@@ -4,7 +4,9 @@ import { DebtRepository } from 'src/app/domain/repositories/debt.repository';
 import { Debt } from 'src/app/domain/entities/debt.entity';
 import { FirestoreDatasource } from '../datasources/firestore.datasource';
 import { DebtMapper } from '../mappers/debt.mapper';
+import { Injectable } from '@angular/core';
 
+@Injectable({ providedIn: 'root' })
 export class FirestoreDebtRepository implements DebtRepository {
   constructor(private readonly datasource: FirestoreDatasource) {}
 

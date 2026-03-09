@@ -2,15 +2,20 @@ import { MonthlyPeriod } from "src/app/domain/entities/monthly-period.entity";
 import { DebtRepository } from "src/app/domain/repositories/debt.repository";
 import { MonthlyPeriodRepository } from "src/app/domain/repositories/monthly-period.repository";
 import { YearMonth } from "src/app/domain/value-objects/year-month.vo";
+import { Inject, Injectable } from "@angular/core";
+import { DEBT_REPOSITORY, MONTHLY_PERIOD_REPOSITORY } from "src/app/core/providers/tokens";
 
 export interface CloseMonthResult {
   hadPendingDebts: boolean;
   pendingDebtsCount: number;
 }
 
+@Injectable({ providedIn: 'root' })
 export class CloseMonthlyPeriodUseCase {
   constructor(
+    @Inject(MONTHLY_PERIOD_REPOSITORY)
     private readonly periodRepository: MonthlyPeriodRepository,
+    @Inject(DEBT_REPOSITORY)
     private readonly debtRepository: DebtRepository
   ) {}
 

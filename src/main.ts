@@ -20,9 +20,13 @@ import * as allIcons from 'ionicons/icons';
 import './app/core/chart/chart-setup';
 
 //Importaciones de tokens
-import { AUTO_CLOSE_PERIOD, AUTH_REPOSITORY } from './app/core/providers/tokens';
-import { provideAutoCloseMonthlyPeriodUseCase } from './app/core/providers/auto-close-monthly-period.provider';
+import { AUTH_REPOSITORY, DEBT_REPOSITORY, MONTHLY_PERIOD_REPOSITORY, MOVEMENT_REPOSITORY } from './app/core/providers/tokens';
 import { FirebaseAuthRepository } from './app/data/repositories/firebase-auth.repository';
+import { FirestoreDebtRepository } from './app/data/repositories/firestore-debt.repository';
+import { FirestoreMovementRepository } from './app/data/repositories/firestore-movement.repository';
+import { FirestoreMonthlyPeriodRepository } from './app/data/repositories/firestore-monthly-period.repository';
+import { FirestoreTimeProvider } from './app/data/services/firestore-time.provider';
+import { TimeProvider } from './app/domain/services/time-provider';
 
 
 addIcons(allIcons);
@@ -35,14 +39,26 @@ bootstrapApplication(AppComponent, {
     provideFirestore(() => getFirestore()),
     provideRouter(routes, withPreloading(PreloadAllModules)),
 
-
-    {
-      provide: AUTO_CLOSE_PERIOD,
-      useFactory: provideAutoCloseMonthlyPeriodUseCase
-    },
     {
       provide: AUTH_REPOSITORY,
       useClass: FirebaseAuthRepository
+    },
+
+    {
+      provide: TimeProvider,
+      useClass: FirestoreTimeProvider
+    },
+    {
+      provide: MOVEMENT_REPOSITORY,
+      useClass: FirestoreMovementRepository
+    },
+    {
+      provide: DEBT_REPOSITORY,
+      useClass: FirestoreDebtRepository
+    },
+    {
+      provide: MONTHLY_PERIOD_REPOSITORY,
+      useClass: FirestoreMonthlyPeriodRepository
     }
   ],
   

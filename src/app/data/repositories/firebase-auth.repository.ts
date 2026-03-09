@@ -1,10 +1,10 @@
-import { inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { AuthRepository } from 'src/app/domain/repositories/auth.repository';
 
+@Injectable({ providedIn: 'root' })
 export class FirebaseAuthRepository implements AuthRepository {
-
-  private auth = inject(Auth);
+  constructor(private readonly auth: Auth) {}
 
   async login(email: string, password: string): Promise<void> {
     await signInWithEmailAndPassword(this.auth, email, password);

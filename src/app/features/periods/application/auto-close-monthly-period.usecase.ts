@@ -2,16 +2,20 @@ import { MonthlyPeriod } from "src/app/domain/entities/monthly-period.entity";
 import { MonthlyPeriodRepository } from "src/app/domain/repositories/monthly-period.repository";
 import { DebtRepository } from "src/app/domain/repositories/debt.repository";
 import { TimeProvider } from "src/app/domain/services/time-provider";
-import { YearMonth } from "src/app/domain/value-objects/year-month.vo";
+import { Inject, Injectable } from "@angular/core";
+import { DEBT_REPOSITORY, MONTHLY_PERIOD_REPOSITORY } from "src/app/core/providers/tokens";
 
 export interface AutoCloseResult {
   monthClosed: boolean;
   pendingDebtsCount: number;
 }
 
+@Injectable({ providedIn: 'root' })
 export class AutoCloseMonthlyPeriodUseCase {
   constructor(
+    @Inject(MONTHLY_PERIOD_REPOSITORY)
     private readonly periodRepository: MonthlyPeriodRepository,
+    @Inject(DEBT_REPOSITORY)
     private readonly debtRepository: DebtRepository,
     private readonly timeProvider: TimeProvider
   ) {}

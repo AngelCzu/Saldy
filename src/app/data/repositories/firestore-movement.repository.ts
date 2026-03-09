@@ -4,7 +4,9 @@ import { Movement } from 'src/app/domain/entities/movement.entity';
 import { FirestoreDatasource } from '../datasources/firestore.datasource';
 import { MovementMapper } from '../mappers/movement.mapper';
 import { YearMonth } from 'src/app/domain/value-objects/year-month.vo';
+import { Injectable } from '@angular/core';
 
+@Injectable({ providedIn: 'root' })
 export class FirestoreMovementRepository implements MovementRepository {
   constructor(private readonly datasource: FirestoreDatasource) {}
 

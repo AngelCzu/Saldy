@@ -3,7 +3,9 @@ import { MonthlyPeriodRepository } from 'src/app/domain/repositories/monthly-per
 import { MonthlyPeriod } from 'src/app/domain/entities/monthly-period.entity';
 import { FirestoreDatasource } from '../datasources/firestore.datasource';
 import { YearMonth } from 'src/app/domain/value-objects/year-month.vo';
+import { Injectable } from '@angular/core';
 
+@Injectable({ providedIn: 'root' })
 export class FirestoreMonthlyPeriodRepository
   implements MonthlyPeriodRepository {
   constructor(private readonly datasource: FirestoreDatasource) {}

@@ -8,11 +8,21 @@ import { MonthlyPeriodRepository } from 'src/app/domain/repositories/monthly-per
 
 import { TimeProvider } from 'src/app/domain/services/time-provider';
 import { MonthlyPeriod } from 'src/app/domain/entities/monthly-period.entity';
+import { Inject, Injectable } from '@angular/core';
+import {
+  DEBT_REPOSITORY,
+  MONTHLY_PERIOD_REPOSITORY,
+  MOVEMENT_REPOSITORY
+} from 'src/app/core/providers/tokens';
 
+@Injectable({ providedIn: 'root' })
 export class RegisterSharedExpenseUseCase {
   constructor(
+    @Inject(MOVEMENT_REPOSITORY)
     private readonly movementRepository: MovementRepository,
+    @Inject(DEBT_REPOSITORY)
     private readonly debtRepository: DebtRepository,
+    @Inject(MONTHLY_PERIOD_REPOSITORY)
     private readonly periodRepository: MonthlyPeriodRepository,
     private readonly timeProvider: TimeProvider
   ) {}

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
@@ -17,11 +17,7 @@ export class RegisterExpensePage {
   amount = 0;
   description = '';
   category = '';
-
-  constructor(
-    @Inject('REGISTER_SHARED_EXPENSE')
-    private registerSharedExpense: RegisterSharedExpenseUseCase
-  ) {}
+  private readonly registerSharedExpense = inject(RegisterSharedExpenseUseCase);
 
   async save() {
     await this.registerSharedExpense.execute({

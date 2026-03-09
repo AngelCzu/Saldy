@@ -2,6 +2,6 @@
 
 import { YearMonth } from '../value-objects/year-month.vo';
 
-export interface TimeProvider {
-  currentYearMonth(): YearMonth;
+export abstract class TimeProvider {
+  abstract currentYearMonth(): YearMonth;
 }
