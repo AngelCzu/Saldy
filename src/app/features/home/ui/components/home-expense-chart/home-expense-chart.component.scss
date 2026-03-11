@@ -1,0 +1,124 @@
+// Card Chart
+.expense-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.25rem;
+}
+
+.expense-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.expense-card__title {
+  font-size: 1.125rem; // text-lg
+  font-weight: 600;
+  color: #111827; // gray-900
+  margin: 0;
+}
+
+.expense-card__link {
+  background: none;
+  border: none;
+  color: #0d9488;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0;
+}
+
+.expense-card__body {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+
+}
+
+/* ---- Donut chart mock ---- */
+.expense-card__chart {
+  width: 8rem;
+  height: 8rem;
+}
+
+
+
+/* ---- Leyenda ---- */
+.expense-card__legend {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-item .dot {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.dot.food {
+  background: #0D9488;
+}
+
+.dot.transport {
+  background: #2563EB;
+}
+
+.dot.services {
+  background: #0891B2;
+}
+
+.legend-item .label {
+  flex: 1;
+  font-size: 0.875rem;
+  color: #4b5563; // gray-600
+}
+
+.legend-item .value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827; // gray-900
+}
+
+
+
+
+
+// Card Chart Empty
+.expense-card__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 28px 16px;
+  text-align: center;
+}
+
+.expense-card__empty ion-icon {
+  font-size: 36px;
+  color: #0d9488;
+  margin-bottom: 8px;
+}
+
+.empty-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.empty-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+}

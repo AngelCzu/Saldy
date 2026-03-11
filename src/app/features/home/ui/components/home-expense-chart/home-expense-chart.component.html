@@ -1,0 +1,60 @@
+<!-- Distribución de gastos -->
+<div class="expense-card">
+
+  <div class="expense-card__header">
+    <h3 class="expense-card__title">Distribución de gastos</h3>
+    <button class="expense-card__link" routerLink="/analysis">Ver más</button>
+  </div>
+
+  <div class="expense-card__body">
+    <!-- CUANDO HAY DATOS -->
+    <ng-container *ngIf="hasData; else emptyChart">
+
+      <!-- Chart -->
+      <div class="expense-card__chart">
+        <canvas #expensesCanvas></canvas>
+      </div>
+
+      <!-- Leyenda -->
+      <div class="expense-card__legend">
+
+        <div class="legend-item" *ngFor="let item of legendItems">
+
+          <span class="dot" [style.background]="item.color"></span>
+
+          <span class="label">
+            {{ item.label }}
+          </span>
+
+          <span class="value">
+            {{ item.percentage }}%
+          </span>
+
+        </div>
+
+      </div>
+
+    </ng-container>
+
+
+    <!-- CUANDO NO HAY DATOS -->
+    <ng-template #emptyChart>
+
+      <div class="expense-card__empty">
+
+        <ion-icon name="pie-chart-outline"></ion-icon>
+
+        <p class="empty-title">Sin datos aún</p>
+
+        <span class="empty-subtitle">
+          Agrega gastos para ver tu distribución
+        </span>
+
+      </div>
+
+    </ng-template>
+
+
+  </div>
+
+</div>

@@ -1,0 +1,52 @@
+  <!-- Header -->
+  <div class="home-header">
+    <div class="home-header__container">
+
+      <div class="home-header__top">
+        <div class="home-header__greeting">
+          <p class="home-header__hello">Hola,</p>
+          <h1 class="home-header__name">{{ userName }}</h1>
+          <h1 class="home-header__stat-change" *ngIf="false">Pepe</h1>
+        </div>
+
+        <div class="home-header__avatar">
+          <span class="text-xl">👋</span>
+        </div>
+      </div>
+
+      <!-- Resumen mensual -->
+      <div class="home-header__summary">
+        <p class="home-header__label">Saldo disponible</p>
+        <h2 class="home-header__balance">{{ balance | currency:'CLP':'symbol':'1.0-0' }}</h2>
+
+        <div class="home-header__stats">
+          <div class="home-header__stat">
+            <div class="home-header__stat-title">
+              <span class="icon">
+                <ion-icon name="trending-up-outline"></ion-icon>
+              </span>
+              <p>Ingresos</p>
+            </div>
+            <p class="home-header__stat-value">{{ income | currency:'CLP':'symbol':'1.0-0' }}</p>
+            <p class="home-header__stat-change">
+              +5% al mes anterior
+            </p>
+          </div>
+
+          <div class="home-header__stat">
+            <div class="home-header__stat-title">
+              <span class="icon">
+                <ion-icon name="trending-down-outline"></ion-icon>
+              </span>
+              <p>Gastos</p>
+            </div>
+            <p class="home-header__stat-value">{{ expense | currency:'CLP':'symbol':'1.0-0' }}</p>
+            <p class="home-header__stat-change">
+              -12% al mes anterior
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>

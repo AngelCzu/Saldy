@@ -16,7 +16,7 @@ export class Movement {
   private readonly description: string;
 
   // Metadatos
-  private readonly category?: string;
+  private readonly categoryId?: string;
   private readonly frequency?: 'UNICA' | 'MENSUAL';
   private readonly isShared?: boolean;
   private readonly goalId?: string;
@@ -28,7 +28,7 @@ export class Movement {
     amount: number;
     yearMonth: YearMonth;
     description: string;
-    category?: string;
+    categoryId?: string;
     frequency?: 'UNICA' | 'MENSUAL';
     isShared?: boolean;
     goalId?: string;
@@ -43,7 +43,7 @@ export class Movement {
     this.amount = params.amount;
     this.yearMonth = params.yearMonth;
     this.description = params.description;
-    this.category = params.category;
+    this.categoryId = params.categoryId;
     this.frequency = params.frequency;
     this.isShared = params.isShared;
     this.goalId = params.goalId;
@@ -57,7 +57,7 @@ export class Movement {
     amount: number;
     yearMonth: YearMonth;
     description: string;
-    category?: string;
+    categoryId?: string;
     frequency?: 'UNICA' | 'MENSUAL';
     isShared?: boolean;
     goalId?: string;
@@ -73,7 +73,7 @@ export class Movement {
     amount: number;
     yearMonth: YearMonth;
     description: string;
-    category?: string;
+    categoryId?: string;
     frequency?: 'UNICA' | 'MENSUAL';
     isShared?: boolean;
     goalId?: string;
@@ -114,8 +114,8 @@ export class Movement {
     return this.description;
   }
 
-  getCategory(): string | undefined {
-    return this.category;
+  getCategoryId(): string | undefined {
+    return this.categoryId;
   }
 
   isExpense(): boolean {
@@ -156,13 +156,13 @@ export class Movement {
 
   private validateMetadata(params: {
     type: MovementType;
-    category?: string;
+    categoryId?: string;
     goalId?: string;
     debtId?: string;
     isShared?: boolean;
   }): void {
     if (params.type === 'EXPENSE') {
-      if (!params.category) {
+      if (!params.categoryId) {
         throw new Error('Un gasto debe tener categoría.');
       }
     }

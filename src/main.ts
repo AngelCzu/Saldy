@@ -21,7 +21,9 @@ import './app/core/chart/chart-setup';
 
 //Importaciones de tokens
 import { AUTH_REPOSITORY, DEBT_REPOSITORY, MONTHLY_PERIOD_REPOSITORY, MOVEMENT_REPOSITORY } from './app/core/providers/tokens';
+import { CategoryRepository } from './app/domain/repositories/category.repository';
 import { FirebaseAuthRepository } from './app/data/repositories/firebase-auth.repository';
+import { FirestoreCategoryRepository } from './app/data/repositories/firestore-category.repository';
 import { FirestoreDebtRepository } from './app/data/repositories/firestore-debt.repository';
 import { FirestoreMovementRepository } from './app/data/repositories/firestore-movement.repository';
 import { FirestoreMonthlyPeriodRepository } from './app/data/repositories/firestore-monthly-period.repository';
@@ -42,6 +44,10 @@ bootstrapApplication(AppComponent, {
     {
       provide: AUTH_REPOSITORY,
       useClass: FirebaseAuthRepository
+    },
+    {
+      provide: CategoryRepository,
+      useClass: FirestoreCategoryRepository
     },
 
     {
