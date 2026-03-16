@@ -1,14 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { IonContent, IonIcon } from '@ionic/angular/standalone';
-
-import { FormsModule } from '@angular/forms';
-
-import { registerLocaleData } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import localeEsCL from '@angular/common/locales/es-CL';
+import { FormsModule } from '@angular/forms';
+import { IonContent, IonIcon, ModalController } from '@ionic/angular/standalone';
 
-import { ModalController } from '@ionic/angular/standalone';
-import { SharedExpenseModal } from '../modals/shared-expense.modal/shared-expense.modal.component'; 
+import { SharedExpenseModal } from '../modals/shared-expense.modal/shared-expense.modal.component';
 
 type TransactionType = 'income' | 'expense';
 type Currency = 'clp' | 'uf';
@@ -20,8 +16,20 @@ interface Category {
   color: string;
 }
 
+interface SharedExpenseData {
+  divisionType: 'percentage' | 'clp';
+  totalAmount: number;
+  participants: {
+    id: string;
+    name: string;
+    isCurrentUser: boolean;
+    amount: number;
+    clpAmount: number;
+  }[];
+}
 
 registerLocaleData(localeEsCL);
+
 @Component({
   selector: 'app-register-movement',
   standalone: true,
@@ -31,7 +39,7 @@ registerLocaleData(localeEsCL);
 })
 export class RegisterMovementPage {
 
-  modalCtrl = inject(ModalController)
+  modalCtrl = inject(ModalController);
 
   categories: Category[] = [
     { id: 'food', name: 'Comida', icon: 'cafe-outline', color: '#f97316' },
@@ -45,147 +53,141 @@ export class RegisterMovementPage {
 
   selectedCategory = '';
 
-  getGridColumns(): number {
-
-  const count = this.categories.length;
-
-  if (count <= 4) return count;
-
-  if (count <= 6) return 3;
-
-  return 4;
-
-}
-
-
-  
   transactionType: TransactionType = 'expense';
-
   title = '';
-  amount = '';
+  amount: number | null = null;
   currency: Currency = 'clp';
   isShared = false;
-  toggleShared() {
-  this.isShared = !this.isShared;
-}
+  sharedExpenseData: SharedExpenseData | null = null;
 
   /* valor UF temporal (solo UI) */
   UF_VALUE = 37850;
+
+  getGridColumns(): number {
+    const count = this.categories.length;
+
+    if (count <= 4) return count;
+    if (count <= 6) return 3;
+
+    return 4;
+  }
+
+  toggleShared() {
+    this.isShared = !this.isShared;
+
+    if (!this.isShared) {
+      this.sharedExpenseData = null;
+    }
+  }
 
   setTransaction(type: TransactionType) {
     this.transactionType = type;
   }
 
-
-  /* ---------------------------
-    Cambiar moneda
-  --------------------------- */
-
   setCurrency(currency: Currency) {
     this.currency = currency;
-    this.amount = '';
+    this.amount = null;
   }
 
-  /* ---------------------------
-    Formatear monto
-  --------------------------- */
-formatAmount() {
+  onAmountInput(value: string) {
+    if (this.currency === 'uf') {
+      const normalizedValue = value.replace(/,/g, '.').replace(/[^\d.]/g, '');
+      const parts = normalizedValue.split('.');
+      const integerPart = parts[0]?.replace(/\D/g, '') ?? '';
+      const decimalPart = parts.slice(1).join('').replace(/\D/g, '');
+      const normalizedNumber = decimalPart
+        ? `${integerPart || '0'}.${decimalPart}`
+        : integerPart;
 
-  if (this.currency === 'uf') {
-
-    let value = this.amount;
-
-    // eliminar caracteres inválidos
-    value = value.replace(/[^\d.]/g, '');
-
-    // permitir solo un punto decimal
-    const parts = value.split('.');
-
-    if (parts.length > 2) {
-      value = parts[0] + '.' + parts[1];
+      this.amount = normalizedNumber ? Number(normalizedNumber) : null;
+      return;
     }
 
-    this.amount = value;
-
-    return;
+    const numeric = value.replace(/\D/g, '');
+    this.amount = numeric ? Number(numeric) : null;
   }
-
-  // CLP (solo enteros)
-
-  const numeric = this.amount.replace(/\D/g, '');
-
-  if (!numeric) {
-    this.amount = '';
-    return;
-  }
-
-  this.amount = new Intl.NumberFormat('es-CL')
-    .format(parseInt(numeric));
-
-}
-
-
-/* ---------------------------
-    Calcular CLP desde UF
-  --------------------------- */
 
   calculateCLPFromUF() {
-
-    const ufAmount = parseFloat(this.amount || '0');
-
+    const ufAmount = this.amount ?? 0;
     return Math.round(ufAmount * this.UF_VALUE);
-
   }
 
+  getUFAmount() {
+    if (this.currency !== 'uf') {
+      return null;
+    }
 
+    return this.amount ?? 0;
+  }
 
-
-  /* ---------------------------
-    Obtener monto numérico
-  --------------------------- */
-
-  getAmountNumber() {
-
+  getCLPAmount() {
     if (this.currency === 'uf') {
       return this.calculateCLPFromUF();
     }
 
-    return parseInt(this.amount.replace(/\./g, '') || '0');
-
+    return this.amount ?? 0;
   }
 
-
+  getAmountNumber() {
+    return this.getCLPAmount();
+  }
 
   submitMovement() {
+    console.log({
+      type: this.transactionType,
+      title: this.title,
+      amount: this.amount,
+      ufAmount: this.getUFAmount(),
+      clpAmount: this.getCLPAmount(),
+      currency: this.currency,
+      category: this.selectedCategory,
+      isShared: this.isShared,
+      sharedExpense: this.sharedExpenseData
+    });
+  }
 
-  console.log({
-    type: this.transactionType,
-    title: this.title,
-    amount: this.amount,
-    currency: this.currency,
-    category: this.selectedCategory,
-    isShared: this.isShared
-  });
+  async openSharedExpenseModal() {
+    const modal = await this.modalCtrl.create({
+      component: SharedExpenseModal,
+      componentProps: {
+        totalAmount: this.getAmountNumber()
+      },
+      breakpoints: [0, 0.85, 0.9],
+      initialBreakpoint: 0.85,
+      expandToScroll: false
+    });
 
-}
+    await modal.present();
 
+    const { data } = await modal.onDidDismiss<SharedExpenseData>();
 
+    if (data) {
+      this.sharedExpenseData = data;
+    }
+  }
 
-async openSharedExpenseModal() {
+  private formatUFDisplay(integerPart: string, decimalPart: string) {
+    if (!integerPart && !decimalPart) {
+      return '';
+    }
 
-  const modal = await this.modalCtrl.create({
-  component: SharedExpenseModal,
-  componentProps: {
-    totalAmount: this.amount
-  },
-    breakpoints: [0, 0.85, 0.9],
-    initialBreakpoint: 0.85,
-    expandToScroll: false
-})
+    const formattedInteger = integerPart
+      ? new Intl.NumberFormat('es-CL').format(parseInt(integerPart, 10))
+      : '0';
 
-  await modal.present();
+    return decimalPart ? `${formattedInteger},${decimalPart}` : formattedInteger;
+  }
 
-}
+  get displayAmount() {
+    if (this.amount === null) {
+      return '';
+    }
 
+    if (this.currency === 'uf') {
+      const [integerPart, decimalPart = ''] = this.amount.toString().split('.');
+      return this.formatUFDisplay(integerPart, decimalPart);
+    }
 
+    return new Intl.NumberFormat('es-CL').format(this.amount);
+  }
 }

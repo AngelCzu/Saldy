@@ -37,7 +37,7 @@ export class SharedExpenseModal {
 
   modalCtrl = inject(ModalController)
   close() {
-    this.modalCtrl.dismiss();
+    this.modalCtrl.dismiss(this.buildSharedExpenseData());
   }
 
   setDivisionType(type: DivisionType) {
@@ -103,4 +103,20 @@ onAmountChange() {
 trackById(index: number, item: Participant) {
   return item.id;
 }
+
+  private buildSharedExpenseData() {
+    return {
+      divisionType: this.divisionType,
+      totalAmount: this.totalAmount,
+      participants: this.participants.map((participant) => ({
+        id: participant.id,
+        name: participant.name,
+        isCurrentUser: participant.isCurrentUser,
+        amount: participant.amount,
+        clpAmount: this.divisionType === 'percentage'
+          ? Math.round(this.totalAmount * participant.amount / 100)
+          : participant.amount
+      }))
+    };
+  }
 }
