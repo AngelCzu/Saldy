@@ -2,12 +2,12 @@ import { Category } from '../entities/category.entity';
 
 export abstract class CategoryRepository {
 
-  abstract getAll(userId: string): Promise<Category[]>;
+  abstract getAll(): Promise<Category[]>;
 
-  abstract getActive(userId: string): Promise<Category[]>;
+  abstract getActive(): Promise<Category[]>;
 
-  abstract create(userId: string, category: Category): Promise<void>;
+  abstract create(category: Category): Promise<void>;
 
-  abstract update(userId: string, category: Category): Promise<void>;
+  abstract update(category: Category): Promise<void>;
 
 }

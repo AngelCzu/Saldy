@@ -1,0 +1,209 @@
+<ion-content [fullscreen]="true">
+
+
+  <!-- Header -->
+  <div class="movement-header">
+
+    <button class="movement-header__back">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+    </button>
+
+    <h1 class="movement-header__title">
+      Registrar movimiento
+    </h1>
+
+  </div>
+  
+  <div class="content">
+    <!-- Selector tipo movimiento -->
+    <div class="movement-container">
+
+      <!-- Segmented Control -->
+      <div class="movement-segment">
+
+        <div class="movement-segment__slider" [class.expense]="transactionType === 'expense'"></div>
+
+        <button class="movement-segment__btn" [class.active]="transactionType === 'income'"
+          (click)="setTransaction('income')">
+          <ion-icon name="trending-up-outline"></ion-icon>
+          <span>Ingreso</span>
+        </button>
+
+        <button class="movement-segment__btn" [class.active]="transactionType === 'expense'"
+          (click)="setTransaction('expense')">
+          <ion-icon name="trending-down-outline"></ion-icon>
+          <span>Gasto</span>
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- Input Movimiento -->
+    <div class="movement-container">
+      <div class="movement-card">
+
+        <label class="movement-card__label">
+          Título del movimiento
+        </label>
+
+        <input class="movement-card__input" type="text" placeholder="Ej: Supermercado, Plan celular"
+          [(ngModel)]="title" />
+
+
+      </div>
+    </div>
+
+    <!-- Input Monto -->
+    <div class="movement-container">
+      <div class="movement-card">
+
+        <!-- selector moneda -->
+        <div class="currency-selector">
+
+          <label class="movement-card__label">
+            Moneda
+          </label>
+
+          <div class="currency-segment">
+
+            <div class="currency-segment__slider" [class.uf]="currency === 'uf'"></div>
+
+            <button class="currency-segment__btn" [class.active]="currency === 'clp'" (click)="setCurrency('clp')">
+              CLP
+            </button>
+
+            <button class="currency-segment__btn" [class.active]="currency === 'uf'" (click)="setCurrency('uf')">
+              UF
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- monto -->
+
+        <label class="movement-card__label">
+          Monto ({{ currency.toUpperCase() }})
+        </label>
+
+        <div class="amount-input">
+
+
+          <input type="text" inputmode="currency === 'uf' ? 'decimal' : 'numeric'" class="amount-input__field"
+            placeholder="0" [(ngModel)]="amount" (input)="formatAmount()" />
+
+          <span class="amount-input__currency">
+            {{ currency.toUpperCase() }}
+          </span>
+
+        </div>
+
+        <div class="uf-info-card" *ngIf="currency === 'uf'">
+
+          <div class="uf-info-card__row">
+
+            <span class="uf-info-card__label">
+              Valor UF hoy
+            </span>
+
+            <span class="uf-info-card__value">
+              ${{ UF_VALUE | number:'1.0-0':'es-CL' }} CLP
+            </span>
+
+          </div>
+
+          <div class="uf-info-card__divider" *ngIf="amount"></div>
+
+          <div class="uf-info-card__row" *ngIf="amount">
+
+            <span class="uf-info-card__label">
+              Total estimado
+            </span>
+
+            <span class="uf-info-card__total">
+              ${{ calculateCLPFromUF() | number:'1.0-0':'es-CL' }} CLP
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Categorias -->
+    <div class="movement-container">
+      <div class="movement-card-category">
+
+        <label class="movement-card__label">
+          Categoría
+        </label>
+
+        <div class="category-grid" [style.gridTemplateColumns]="'repeat(' + getGridColumns() + ', 1fr)'">
+
+          <button *ngFor="let category of categories" class="category-item"
+            [class.active]="selectedCategory === category.id" (click)="selectedCategory = category.id">
+
+            <div class="category-item__icon" [style.background]="category.color">
+              <ion-icon [name]="category.icon"></ion-icon>
+            </div>
+
+            <span class="category-item__name">
+              {{ category.name }}
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Compartido -->
+    <div class="movement-container">
+      <div class="movement-card">
+
+        <div class="shared-header">
+
+          <div>
+
+            <label class="shared-title">
+              Gasto compartido
+            </label>
+
+            <p class="shared-subtitle">
+              Dividir este gasto con otros
+            </p>
+
+          </div>
+
+          <button class="shared-toggle" [class.active]="isShared" (click)="toggleShared()">
+
+            <div class="shared-toggle__circle"></div>
+
+          </button>
+
+        </div>
+
+        <button *ngIf="isShared" class="shared-config-btn" (click)="openSharedExpenseModal()">
+          Configurar división
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Boton Guardar -->
+    <div style="padding-bottom: 25px;" class="movement-container">
+      <button class="submit-btn" (click)="submitMovement()">
+        {{ transactionType === 'income'
+        ? 'Guardar ingreso'
+        : 'Guardar movimiento'
+        }}
+      </button>
+    </div>
+  </div>
+
+</ion-content>

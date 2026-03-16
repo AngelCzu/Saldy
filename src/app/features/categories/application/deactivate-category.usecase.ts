@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Category } from 'src/app/domain/entities/category.entity';
 import { CategoryRepository } from 'src/app/domain/repositories/category.repository';
 
 @Injectable({ providedIn: 'root' })
@@ -10,7 +11,7 @@ export class DeactivateCategoryUseCase {
 
   async execute(userId: string, categoryId: string) {
 
-    const categories = await this.repository.getAll(userId);
+    const categories = await this.repository.getAll();
 
     const category = categories.find(c => c.getId() === categoryId);
 
@@ -25,7 +26,7 @@ export class DeactivateCategoryUseCase {
       isActive: false
     });
 
-    await this.repository.update(userId, updated);
+    await this.repository.update(updated);
   }
 
 }

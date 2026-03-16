@@ -8,7 +8,7 @@ import { FirestoreDatasource } from '../datasources/firestore.datasource';
 export class FirestoreCategoryRepository implements CategoryRepository {
   constructor(private readonly datasource: FirestoreDatasource) {}
 
-  async getAll(_userId: string): Promise<Category[]> {
+  async getAll(): Promise<Category[]> {
     const snapshot = await getDocs(
       this.datasource.userCollection('categorias')
     );
@@ -16,17 +16,17 @@ export class FirestoreCategoryRepository implements CategoryRepository {
     return snapshot.docs.map(d => this.toEntity(d.id, d.data()));
   }
 
-  async getActive(userId: string): Promise<Category[]> {
-    const categories = await this.getAll(userId);
+  async getActive(): Promise<Category[]> {
+    const categories = await this.getAll();
     return categories.filter(c => c.isActiveCategory());
   }
 
-  async create(_userId: string, category: Category): Promise<void> {
+  async create(category: Category): Promise<void> {
     const ref = this.datasource.userDoc(`categorias/${category.getId()}`);
     await setDoc(ref, this.toFirestore(category));
   }
 
-  async update(_userId: string, category: Category): Promise<void> {
+  async update(category: Category): Promise<void> {
     const ref = this.datasource.userDoc(`categorias/${category.getId()}`);
 
     const existing = await getDoc(ref);

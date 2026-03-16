@@ -1,0 +1,327 @@
+
+
+// ------------ Header -------------------
+.modal-header {
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 16px 20px;
+
+  background: white;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  z-index: 10;
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+  background: transparent;
+}
+
+.modal-close ion-icon {
+  font-size: 20px;
+  color: #6b7280;
+}
+
+
+// ------------ Content -------------------
+
+
+// Monto a compartir 
+.modal-content {
+  padding: 20px;
+}
+
+.expense-total-card {
+      background: #ffffff;
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.expense-total-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.expense-total-value {
+  font-size: 22px;
+  font-weight: 600;
+
+  color: #111827;
+}
+
+
+
+// -------------- Participantes y División card -----------------------
+
+// Contenedor general
+.movement-container{
+  width: 100%;
+  max-width: 420px;
+  padding: 11px 0px 0px 0px;
+}
+
+// Card
+.movement-card{
+  background: #ffffff;
+  padding: 11px 11px 0px 11px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+
+// Tipo de Difinicion Header
+
+.division-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.split-hint {
+  font-size: 12px;
+  color: #6b7280;
+  display: flex;
+  justify-content: center;
+}
+
+// Tipo de Difinicion Segment
+.movement-segment__slider.clp {
+  transform: translateX(100%);
+}
+
+.movement-segment {
+
+  position: relative;
+
+  display: flex;
+
+  padding: 10px;
+
+  border-radius: 14px;
+
+  background: #f3f4f6;
+
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+
+}
+
+.movement-segment__slider {
+
+  position: absolute;
+
+  top: 4px;
+  left: 4px;
+
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+
+  border-radius: 10px;
+
+  background: #0d9488;
+
+  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+
+}
+
+.movement-segment__slider.expense {
+  transform: translateX(100%);
+}
+
+.movement-segment__btn {
+
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 10px 12px;  //más compacto 
+
+  border: none;
+  background: transparent;
+
+  border-radius: 10px;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  color: #6b7280;
+
+  position: relative;
+  z-index: 2;
+
+  transition: color 0.2s;
+
+}
+
+.movement-segment__btn ion-icon {
+  font-size: 16px;
+}
+
+.movement-segment__btn.active {
+  color: white;
+}
+
+.division-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 13px;
+  color: #6b7280;
+
+  margin-top: 10px;
+}
+
+.division-info ion-icon {
+  color: #0d9488;
+  font-size: 16px;
+}
+
+
+// Participantes
+.participants-section {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 0.8rem;
+}
+
+.division-label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.participants-list{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.participant-card {
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  background: white;
+}
+
+.participant-card.current-user {
+  border: 1px solid #0d9488;
+  background: rgba(13,148,136,0.05);
+}
+
+.participant-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.participant-name {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.participant-you {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+
+}
+
+.participant-badge {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #0d9488;
+  color: white;
+}
+
+.participant-input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background: transparent;
+}
+
+.participant-amount {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.amount-field {
+  width: 70px;
+  text-align: right;
+  border: none;
+  outline: none;
+  font-weight: 600;
+  color: #0d9488;
+  background: transparent;
+}
+
+.amount-unit {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.remove-btn {
+  border: none;
+  background: transparent;
+  color: #ef4444;
+}
+
+.participant-equivalent {
+  font-size: 11px;
+  margin-top: 4px;
+  color: #6b7280;
+}
+
+.add-participant-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px dashed #d1d5db;
+  background: transparent;
+  font-size: 14px;
+  color: #6b7280;
+  transition: all 0.2s;
+}
+
+.add-participant-btn:hover {
+  border-color: #0d9488;
+  color: #0d9488;
+  background: rgba(13,148,136,0.05);
+}

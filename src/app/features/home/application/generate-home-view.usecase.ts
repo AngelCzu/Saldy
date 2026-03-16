@@ -15,7 +15,6 @@ export interface CategoryDistribution {
 
 export interface HomeSummary {
   movements: Movement[];
-  hasMovements: boolean;
   totalIncome: number;
   totalExpense: number;
   balance: number;
@@ -37,13 +36,12 @@ export class GenerateHomeViewUseCase {
     await this.autoClose.execute();
 
     const movements = await this.listMovements.execute();
-    const categories = await this.categoryRepository.getAll('');
+    const categories = await this.categoryRepository.getAll();
 
     const summary = this.calculateSummary(movements, categories);
 
     return {
       movements,
-      hasMovements: movements.length > 0,
       ...summary
     };
   }
@@ -79,11 +77,16 @@ export class GenerateHomeViewUseCase {
         categoryMap.set(categoryId, current + amount);
       }
     }
+
+    const categoryIndex = new Map(
+      categories.map(c => [c.getId(), c])
+    );
+
     const result: CategoryDistribution[] = [];
 
     for (const [categoryId, amount] of categoryMap.entries()) {
 
-      const category = categories.find(c => c.getId() === categoryId);
+      const category = categoryIndex.get(categoryId);
 
       if (!category) continue;
 

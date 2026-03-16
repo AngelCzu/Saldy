@@ -1,0 +1,157 @@
+<!-- Header -->
+
+<div class="modal-header">
+
+  <h2 class="modal-title">
+    Dividir gasto
+  </h2>
+
+  <button class="modal-close" (click)="close()">
+    <ion-icon name="close-outline"></ion-icon>
+  </button>
+
+</div>
+
+<!-- Content -->
+<ion-content [fullscreen]="true">
+  <div class="modal-content">
+
+    <div class="expense-total-card">
+
+      <span class="expense-total-label">
+        Total del gasto
+      </span>
+
+      <span class="expense-total-value">
+        {{ totalAmount | number:'1.0-0':'es-CL' }} CLP
+      </span>
+
+    </div>
+
+    <div class="movement-container">
+
+      <div class="movement-card">
+
+        <!-- Tipo de división -->
+        <div class="division-section">
+
+          <span class="split-hint">
+            Define cómo se repartirá el monto entre los participantes
+          </span>
+
+
+          <div class="movement-segment">
+
+            <div class="movement-segment__slider" [class.clp]="divisionType === 'clp'">
+            </div>
+
+            <button class="movement-segment__btn" [class.active]="divisionType === 'percentage'"
+              (click)="setDivisionType('percentage')">
+              %
+              <span>Porcentaje</span>
+            </button>
+
+            <button class="movement-segment__btn" [class.active]="divisionType === 'clp'"
+              (click)="setDivisionType('clp')">
+              <ion-icon name="cash-outline"></ion-icon>
+              <span>CLP</span>
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- Mensaje contextual -->
+        <div class="division-info">
+
+          <ion-icon name="information-circle-outline"></ion-icon>
+
+          <span *ngIf="divisionType === 'percentage'">
+            La suma de los participantes debe ser <b>100%</b>
+          </span>
+
+          <span *ngIf="divisionType === 'clp'">
+            La suma debe ser igual al <b>monto total</b>
+          </span>
+
+          
+        </div>
+
+
+        <!-- Participantes -->
+        <!-- Participantes -->
+        <div class="participants-section">
+
+          <span class="division-label">
+            Participantes
+          </span>
+
+          <div class="participants-list">
+
+            <div *ngFor="let participant of participants; trackBy: trackById" class="participant-card"
+              [class.current-user]="participant.isCurrentUser">
+
+              <div class="participant-row">
+
+                <!-- Nombre -->
+                <div class="participant-name">
+
+                  <ng-container *ngIf="participant.isCurrentUser; else editableName">
+                    <span class="participant-you">Tú</span>
+                    <span class="participant-badge">Tú</span>
+                  </ng-container>
+
+                  <ng-template #editableName>
+                    <input type="text" placeholder="Nombre" [(ngModel)]="participant.name" class="participant-input" />
+                  </ng-template>
+
+                </div>
+
+                <!-- Monto -->
+                <div class="participant-amount">
+
+                  <input type="number" class="amount-field" [(ngModel)]="participant.amount"
+                    (ngModelChange)="onAmountChange()" [step]="divisionType === 'percentage' ? 0.1 : 100" />
+
+                  <span class="amount-unit">
+                    {{ divisionType === 'percentage' ? '%' : 'CLP' }}
+                  </span>
+
+                </div>
+
+                <!-- eliminar -->
+                <button *ngIf="!participant.isCurrentUser" class="remove-btn"
+                  (click)="removeParticipant(participant.id)">
+                  <ion-icon name="close-outline"></ion-icon>
+                </button>
+
+              </div>
+
+              <!-- equivalente CLP -->
+              <div *ngIf="divisionType === 'percentage'" class="participant-equivalent">
+                {{
+                (totalAmount * participant.amount / 100)
+                | number:'1.0-0':'es-CL'
+                }} CLP
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- Botón agregar -->
+
+          <button class="add-participant-btn" (click)="addParticipant()">
+            <ion-icon name="add-outline"></ion-icon>
+            Agregar participante
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</ion-content>

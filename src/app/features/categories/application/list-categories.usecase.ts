@@ -10,7 +10,7 @@ export class ListActiveCategoriesUseCase {
   ) {}
 
   async execute(userId: string): Promise<Category[]> {
-    return this.repository.getActive(userId);
+    return this.repository.getActive();
   }
 
 }

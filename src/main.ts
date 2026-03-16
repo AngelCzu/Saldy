@@ -31,11 +31,13 @@ import { FirestoreTimeProvider } from './app/data/services/firestore-time.provid
 import { TimeProvider } from './app/domain/services/time-provider';
 
 
+
 addIcons(allIcons);
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
+    provideRouter(routes),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
