@@ -92,48 +92,58 @@
             <div *ngFor="let participant of participants; trackBy: trackById" class="participant-card"
               [class.current-user]="participant.isCurrentUser">
 
-              <div class="participant-row">
+              <div class="participants-container">
+                <div class="participants-data">
+                <div class="participant-row">
 
-                <!-- Nombre -->
-                <div class="participant-name">
+                  <!-- Nombre -->
+                  <div class="participant-name">
 
-                  <ng-container *ngIf="participant.isCurrentUser; else editableName">
-                    <span class="participant-you">Tú</span>
-                    <span class="participant-badge">Tú</span>
-                  </ng-container>
+                    <ng-container *ngIf="participant.isCurrentUser; else editableName">
+                      <span class="participant-you">Tú</span>
+                      <span class="participant-badge">Tú</span>
+                    </ng-container>
 
-                  <ng-template #editableName>
-                    <input type="text" placeholder="Nombre" [(ngModel)]="participant.name" class="participant-input" />
-                  </ng-template>
+                    <ng-template #editableName>
+                      <input type="text" placeholder="Nombre" [(ngModel)]="participant.name" class="participant-input" />
+                    </ng-template>
 
+                  </div>
+                                <!-- equivalente CLP -->
+                  <div *ngIf="divisionType === 'percentage'" class="participant-equivalent">
+                    {{
+                    (totalAmount * participant.amount / 100)
+                    | number:'1.0-0':'es-CL'
+                    }} CLP
+                  </div>
                 </div>
 
-                <!-- Monto -->
-                <div class="participant-amount">
+                </div>
+                <div class="participants-amount-unit">
+                  <!-- Monto -->
+                  <div class="participant-amount">
 
-                  <input type="number" class="amount-field" [(ngModel)]="participant.amount"
-                    (ngModelChange)="onAmountChange()" [step]="divisionType === 'percentage' ? 0.1 : 100" />
+                    <input type="number" class="amount-field" [(ngModel)]="participant.amount"
+                      (ngModelChange)="onAmountChange()" [step]="divisionType === 'percentage' ? 0.1 : 100" />
 
-                  <span class="amount-unit">
-                    {{ divisionType === 'percentage' ? '%' : 'CLP' }}
-                  </span>
+                    <span class="amount-unit">
+                      {{ divisionType === 'percentage' ? '%' : 'CLP' }}
+                    </span>
 
+                  
+
+                  <!-- eliminar -->
+                  <button *ngIf="!participant.isCurrentUser" class="remove-btn"
+                    (click)="removeParticipant(participant.id)">
+                    <ion-icon style="font-size: 20px;" name="close-outline"></ion-icon>
+                  </button>
+                  <div *ngIf="participant.isCurrentUser" class="adaptation-currentUser">
+
+                  </div>
+                  </div>
+                
                 </div>
 
-                <!-- eliminar -->
-                <button *ngIf="!participant.isCurrentUser" class="remove-btn"
-                  (click)="removeParticipant(participant.id)">
-                  <ion-icon name="close-outline"></ion-icon>
-                </button>
-
-              </div>
-
-              <!-- equivalente CLP -->
-              <div *ngIf="divisionType === 'percentage'" class="participant-equivalent">
-                {{
-                (totalAmount * participant.amount / 100)
-                | number:'1.0-0':'es-CL'
-                }} CLP
               </div>
 
             </div>

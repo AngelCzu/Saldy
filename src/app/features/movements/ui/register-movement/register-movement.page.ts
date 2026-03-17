@@ -82,24 +82,25 @@ export class RegisterMovementPage {
 
   setTransaction(type: TransactionType) {
     this.transactionType = type;
+
+    if (type === 'income') {
+      this.currency = 'clp';
+    }
   }
 
   setCurrency(currency: Currency) {
+    if (this.transactionType === 'income') {
+      this.currency = 'clp';
+      return;
+    }
+
     this.currency = currency;
     this.amount = null;
   }
 
   onAmountInput(value: string) {
     if (this.currency === 'uf') {
-      const normalizedValue = value.replace(/,/g, '.').replace(/[^\d.]/g, '');
-      const parts = normalizedValue.split('.');
-      const integerPart = parts[0]?.replace(/\D/g, '') ?? '';
-      const decimalPart = parts.slice(1).join('').replace(/\D/g, '');
-      const normalizedNumber = decimalPart
-        ? `${integerPart || '0'}.${decimalPart}`
-        : integerPart;
-
-      this.amount = normalizedNumber ? Number(normalizedNumber) : null;
+      this.amount = this.parseUFInput(value);
       return;
     }
 
@@ -117,7 +118,7 @@ export class RegisterMovementPage {
       return null;
     }
 
-    return this.amount ?? 0;
+    return this.UF_VALUE ?? 0;
   }
 
   getCLPAmount() {
@@ -133,17 +134,42 @@ export class RegisterMovementPage {
   }
 
   submitMovement() {
+
+    if (this.transactionType == 'expense' && this.currency == 'clp' ) {
+        console.log({
+        type: this.transactionType,
+        title: this.title,
+        amount: this.amount,
+        currency: this.currency,
+        category: this.selectedCategory,
+        isShared: this.isShared,
+        sharedExpense: this.sharedExpenseData
+      });
+    }
+
+    if (this.transactionType == 'expense' && this.currency == 'uf' ) {
     console.log({
-      type: this.transactionType,
-      title: this.title,
-      amount: this.amount,
-      ufAmount: this.getUFAmount(),
-      clpAmount: this.getCLPAmount(),
-      currency: this.currency,
-      category: this.selectedCategory,
-      isShared: this.isShared,
-      sharedExpense: this.sharedExpenseData
-    });
+        type: this.transactionType,
+        title: this.title,
+        amount_uf: this.amount,
+        ufAmount: this.getUFAmount(),
+        clpAmount: this.getCLPAmount(),
+        currency: this.currency,
+        category: this.selectedCategory,
+        isShared: this.isShared,
+        sharedExpense: this.sharedExpenseData
+      });
+    }
+
+    if (this.transactionType == 'income' ) {
+        console.log({
+        type: this.transactionType,
+        title: this.title,
+        amount: this.amount,
+        currency: this.currency,
+      });
+    }
+    
   }
 
   async openSharedExpenseModal() {
@@ -176,6 +202,24 @@ export class RegisterMovementPage {
       : '0';
 
     return decimalPart ? `${formattedInteger},${decimalPart}` : formattedInteger;
+  }
+
+  private parseUFInput(value: string) {
+    const sanitizedValue = value.replace(/[^\d.,]/g, '');
+    const lastCommaIndex = sanitizedValue.lastIndexOf(',');
+
+    if (lastCommaIndex >= 0) {
+      const integerPart = sanitizedValue.slice(0, lastCommaIndex).replace(/[^\d]/g, '');
+      const decimalPart = sanitizedValue.slice(lastCommaIndex + 1).replace(/[^\d]/g, '');
+      const normalizedNumber = decimalPart
+        ? `${integerPart || '0'}.${decimalPart}`
+        : integerPart;
+
+      return normalizedNumber ? Number(normalizedNumber) : null;
+    }
+
+    const integerPart = sanitizedValue.replace(/[^\d]/g, '');
+    return integerPart ? Number(integerPart) : null;
   }
 
   get displayAmount() {

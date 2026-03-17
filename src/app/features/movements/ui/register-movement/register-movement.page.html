@@ -39,6 +39,8 @@
 
     </div>
 
+
+    <!-- Gastos -->
     <ng-container *ngIf="transactionType == 'expense'">
       <!-- Input Movimiento -->
       <div class="movement-container">
@@ -63,7 +65,7 @@
           <div class="currency-selector">
 
             <label class="movement-card__label">
-              Moneda
+              Monto ({{ currency.toUpperCase() }})
             </label>
 
             <div class="currency-segment">
@@ -82,22 +84,12 @@
 
           </div>
 
-
-          <!-- monto -->
-
-          <label class="movement-card__label">
-            Monto ({{ currency.toUpperCase() }})
-          </label>
-
           <div class="amount-input">
 
-
+            
             <input type="text" [attr.inputmode]="currency === 'uf' ? 'decimal' : 'numeric'" class="amount-input__field"
               placeholder="0" [ngModel]="displayAmount" (ngModelChange)="onAmountInput($event)" />
 
-            <span class="amount-input__currency">
-              {{ currency.toUpperCase() }}
-            </span>
 
           </div>
 
@@ -197,6 +189,8 @@
       </div>
     </ng-container>
 
+
+    <!-- Ingresos -->
     <ng-container *ngIf="transactionType == 'income'">
     <!-- Input Movimiento -->
       <div class="movement-container">
@@ -206,7 +200,7 @@
             Título del movimiento
           </label>
 
-          <input class="movement-card__input" type="text" placeholder="Ej: Supermercado, Plan celular"
+          <input class="movement-card__input" type="text" placeholder="Ej: Bono, Sueldo"
             [(ngModel)]="title" />
 
 
@@ -220,51 +214,16 @@
           <!-- monto -->
 
           <label class="movement-card__label">
-            Monto ({{ currency.toUpperCase() }})
+            Monto (CLP)
           </label>
 
           <div class="amount-input">
 
 
-            <input type="text" [attr.inputmode]="currency === 'uf' ? 'decimal' : 'numeric'" class="amount-input__field"
+            <input type="text" inputmode="numeric" class="amount-input__field"
               placeholder="0" [ngModel]="displayAmount" (ngModelChange)="onAmountInput($event)" />
 
-            <span class="amount-input__currency">
-              {{ currency.toUpperCase() }}
-            </span>
-
           </div>
-
-          <div class="uf-info-card" *ngIf="currency === 'uf'">
-
-            <div class="uf-info-card__row">
-
-              <span class="uf-info-card__label">
-                Valor UF hoy
-              </span>
-
-              <span class="uf-info-card__value">
-                ${{ UF_VALUE | number:'1.0-0':'es-CL' }} CLP
-              </span>
-
-            </div>
-
-            <div class="uf-info-card__divider" *ngIf="amount"></div>
-
-            <div class="uf-info-card__row" *ngIf="amount">
-
-              <span class="uf-info-card__label">
-                Total estimado
-              </span>
-
-              <span class="uf-info-card__total">
-                ${{ calculateCLPFromUF() | number:'1.0-0':'es-CL' }} CLP
-              </span>
-
-            </div>
-
-          </div>
-
         </div>
 
       </div>

@@ -6,13 +6,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   padding: 16px 20px;
-
   background: white;
-
   border-bottom: 1px solid #e5e7eb;
-
   z-index: 10;
 }
 
@@ -78,7 +74,7 @@
 // Contenedor general
 .movement-container{
   width: 100%;
-  max-width: 420px;
+
   padding: 11px 0px 0px 0px;
 }
 
@@ -233,15 +229,25 @@
   background: white;
 }
 
+.participants-container{
+      display: flex;
+    flex-direction: row;
+}
+
+.participants-data{
+      width: 70%;
+}
+
 .participant-card.current-user {
   border: 1px solid #0d9488;
   background: rgba(13,148,136,0.05);
 }
 
 .participant-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    align-items: flex-start;
+    /* gap: 10px; */
+    flex-direction: column;
 }
 
 .participant-name {
@@ -273,10 +279,16 @@
   background: transparent;
 }
 
+.participants-amount-unit{
+  width: 30%;
+}
 .participant-amount {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    width: 100%;
+    justify-content: flex-end;
 }
 
 .amount-field {
@@ -294,10 +306,17 @@
   color: #6b7280;
 }
 
+.adaptation-currentUser{
+  padding-left: 20px;
+}
+
 .remove-btn {
-  border: none;
-  background: transparent;
-  color: #ef4444;
+    border: none;
+    background: transparent;
+    color: #ef4444;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .participant-equivalent {
@@ -307,6 +326,7 @@
 }
 
 .add-participant-btn {
+  padding-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;

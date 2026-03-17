@@ -12,29 +12,21 @@ display: flex;
   position: sticky;
   top: 0;
   z-index: 10;
-
   display: flex;
   align-items: center;
   gap: 12px;
-
   padding: 16px;
-
   background: white;
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-
   &__back {
     display: flex;
     align-items: center;
     justify-content: center;
-
     width: 36px;
     height: 36px;
-
     border-radius: 50%;
     border: none;
-
     background: transparent;
-
     ion-icon {
       font-size: 22px;
       color: #111827;
@@ -50,48 +42,31 @@ display: flex;
 
 // Container general
 .movement-container {
-
   width: 100%;
   max-width: 420px;   // ← tamaño tipo fintech
-
   padding: 11px 11px 0px 11px
-
 }
 
 
 // Segment
 .movement-segment {
-
   position: relative;
-
   display: flex;
-
   padding: 10px;
-
   border-radius: 14px;
-
   background: white;
-
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-
 }
 
 .movement-segment__slider {
-
   position: absolute;
-
   top: 4px;
   left: 4px;
-
   width: calc(50% - 4px);
   height: calc(100% - 8px);
-
   border-radius: 10px;
-
   background: #0d9488;
-
   transition: transform 0.25s cubic-bezier(.4,0,.2,1);
-
 }
 
 .movement-segment__slider.expense {
@@ -99,31 +74,21 @@ display: flex;
 }
 
 .movement-segment__btn {
-
   flex: 1;
-
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-
   padding: 10px 12px;  //más compacto 
-
   border: none;
   background: transparent;
-
   border-radius: 10px;
-
   font-size: 14px;
   font-weight: 500;
-
   color: #6b7280;
-
   position: relative;
   z-index: 2;
-
   transition: color 0.2s;
-
 }
 
 .movement-segment__btn ion-icon {
@@ -138,44 +103,29 @@ display: flex;
 
 // Input Titulo o descripcion
 .movement-card {
-
   background: #ffffff;
-
   padding: 18px;
-
   border-radius: 16px;
-
   border: 1px solid #e5e7eb;
-
   display: flex;
   flex-direction: column;
   gap: 8px;
-
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-
 }
 
 .movement-card__label {
-
   font-size: 14px;
   font-weight: 500;
-
   color: #374151;
-
 }
 
 
 .movement-card__input {
-
   border: none;
   outline: none;
-
   font-size: 16px;
-
   background: transparent;
-
   color: #111827;
-
 }
 
 
@@ -185,13 +135,9 @@ display: flex;
 
 
 .movement-card:focus-within {
-
   border-color: #0d9488;
-
   box-shadow: 0 0 0 3px rgba(13,148,136,0.1);
-
   background: #fdfdfd;
-
 }
 
 
@@ -202,17 +148,10 @@ display: flex;
 
 // ------------------ Input-Monto ------------------
 .amount-input {
-
   display: flex;
   align-items: center;
   gap: 8px;
-
   border-bottom: 2px solid #e5e7eb; 
-
-  padding-bottom: 6px;
-
-
-
 }
 
 .amount-input:focus-within {
@@ -222,21 +161,14 @@ display: flex;
 
 
 .amount-input__field {
-
   flex: 1;
-
   border: none;
   outline: none;
-
   font-size: 30px;
   font-weight: 600;
-
   min-height: 36px;
-
   background: transparent;
-
   color: #111827;
-
 }
 
 
@@ -246,58 +178,38 @@ display: flex;
 
 
 .amount-input__currency {
-
   width: 38px;     
   text-align: right;
-
   font-size: 16px;
   color: #6b7280;
-
 }
 
 .currency-selector {
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   margin-bottom: 14px;
-
 }
 
 .currency-segment {
-
   position: relative;
-
   display: flex;
-
   padding: 4px;
-
   border-radius: 10px;
-
   background: #f3f4f6;
-
 }
 
 
 .currency-segment__slider {
-
   position: absolute;
-
   top: 4px;
   left: 4px;
-
   width: calc(50% - 4px);
   height: calc(100% - 8px);
-
   background: #0d9488;
-
   border-radius: 8px;
-
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-
   transition: transform 0.25s cubic-bezier(.4,0,.2,1);
-
 }
 
 .currency-segment__slider.uf {
@@ -305,300 +217,180 @@ display: flex;
 }
 
 .currency-segment__btn {
-
   flex: 1;
-
   border: none;
   background: transparent;
-
   padding: 6px 14px;
-
   font-size: 13px;
   font-weight: 500;
-
   color: #6b7280;
-
   position: relative;
   z-index: 2;
-
   transition: color 0.2s;
-
 }
 
 .currency-segment__btn.active {
-
   color: white;
-
 }
 
 .uf-info-card {
-
   background: rgba(13,148,136,0.08);
-
   border: 1px solid rgba(13,148,136,0.2);
-
   border-radius: 14px;
-
   padding: 14px;
-
   margin-top: 14px;
-
   display: flex;
   flex-direction: column;
   gap: 10px;
-
 }
 
 .uf-info-card__row {
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
 }
 
 .uf-info-card__label {
-
   font-size: 13px;
-
   color: #6b7280;
-
 }
 
 .uf-info-card__value {
-
   font-size: 14px;
   font-weight: 600;
-
   color: #0d9488;
-
 }
 
 .uf-info-card__total {
-
   font-size: 18px;
   font-weight: 700;
-
   color: #0d9488;
-
 }
 
 .uf-info-card__divider {
-
   height: 1px;
-
   background: rgba(13,148,136,0.2);
-
 }
 
 
 // ------------------------- Categorias -------------------------------
 
 .movement-card-category{
-
   background: #ffffff;
-
   padding: 18px;
-
   border-radius: 16px;
-
   border: 1px solid #e5e7eb;
-
   display: flex;
   flex-direction: column;
   gap: 8px;
-
-
 }
 
 .category-grid {
-
   display: grid;
-
   gap: 10px;
-
 }
 
-/* item */
-
 .category-item {
-
   display: flex;
   flex-direction: column;
   align-items: center;
-
   gap: 6px;
-
   padding: 8px;
-
   border-radius: 10px;
-
   background: transparent;
-
   border: none;
-
   transition: all 0.2s;
-
 }
-
-/* hover */
 
 .category-item:hover {
   background: #f9fafb;
 }
 
-/* icon */
-
 .category-item__icon {
-
   width: 36px;
   height: 36px;
-
   border-radius: 50%;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: white;
-
   font-size: 18px;
-
 }
-
-/* nombre */
 
 .category-item__name {
-
   font-size: 11px;
-
   text-align: center;
-
   color: #111827;
-
 }
 
-/* seleccion */
-
 .category-item.active {
-
   box-shadow: 0 0 0 2px #0d9488;
-
 }
 
 
 // -------------------- Compartido -------------------
 .shared-header {
-
   display: flex;
   align-items: center;
   justify-content: space-between;
-
 }
 
-/* texto */
-
 .shared-title {
-
   font-size: 14px;
   font-weight: 600;
-
   color: #111827;
-
 }
 
 .shared-subtitle {
-
   font-size: 12px;
-
   color: #6b7280;
-
   margin-top: 2px;
-
 }
-
-/* toggle */
 
 .shared-toggle {
-
   width: 44px;
   height: 24px;
-
   border-radius: 20px;
-
   background: #d1d5db;
-
   border: none;
-
   position: relative;
-
   transition: background 0.25s;
-
 }
-
-/* círculo */
 
 .shared-toggle__circle {
-
   position: absolute;
-
   top: 2px;
   left: 2px;
-
   width: 20px;
   height: 20px;
-
   background: white;
-
   border-radius: 50%;
-
   transition: transform 0.25s;
-
 }
 
-/* activo */
-
 .shared-toggle.active {
-
   background: #0d9488;
-
 }
 
 .shared-toggle.active .shared-toggle__circle {
-
   transform: translateX(20px);
-
 }
 
-/* botón configuración */
-
 .shared-config-btn {
-
   width: 100%;
-
   margin-top: 14px;
-
   padding: 10px;
-
   border-radius: 10px;
-
   border: 2px solid #0d9488;
-
   background: transparent;
-
   color: #0d9488;
-
   font-size: 13px;
   font-weight: 600;
-
   transition: background 0.2s;
-
 }
 
 .shared-config-btn:hover {
-
   background: rgba(13,148,136,0.05);
-
 }
 
 .shared-toggle:active {
@@ -607,40 +399,24 @@ display: flex;
 
 
 
-
 // ------------------ Boton Guardar -------------------
 .submit-btn {
-
   width: 100%;
-
   padding: 16px;
-
   margin-top: 10px;
-
   border: none;
-
   border-radius: 16px;
-
   background: #0d9488;
-
   color: white;
-
   font-size: 16px;
   font-weight: 600;
-
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-
   transition: all 0.2s ease;
-
 }
-
-/* hover */
 
 .submit-btn:hover {
   box-shadow: 0 6px 14px rgba(0,0,0,0.12);
 }
-
-/* tactil */
 
 .submit-btn:active {
   transform: scale(0.97);
