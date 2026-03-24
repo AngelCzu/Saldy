@@ -1,20 +1,32 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import localeEsCL from '@angular/common/locales/es-CL';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonIcon, ModalController } from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonIcon,
+  IonSpinner,
+  ModalController,
+} from '@ionic/angular/standalone';
 
 import { SharedExpenseModal } from '../modals/shared-expense.modal/shared-expense.modal.component';
 
+
+import { firstValueFrom, filter } from 'rxjs';
+import { SessionService } from 'src/app/core/session/session.service';
+
+import { CurrencyService } from 'src/app/core/services/currency.service';
+import { RegisterMovementFacade } from '../../application/register-movement.facade';
+import { initialUiState, setLoading, UiState } from 'src/app/core/state/ui-state';
+import { CategoriesFacade } from 'src/app/features/categories/application/categories.facade';
+import { ToastService } from 'src/app/core/ui/toast.service';
+
+
+import { CategorySelectorComponent } from './components/category-selector/category-selector.component';
+import { AmountInputComponent } from './components/amount-input/amount-input.component';
 type TransactionType = 'income' | 'expense';
 type Currency = 'clp' | 'uf';
 
-interface Category {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-}
 
 interface SharedExpenseData {
   divisionType: 'percentage' | 'clp';
@@ -35,25 +47,31 @@ registerLocaleData(localeEsCL);
   standalone: true,
   templateUrl: './register-movement.page.html',
   styleUrls: ['./register-movement.page.scss'],
-  imports: [CommonModule, IonContent, IonIcon, FormsModule]
+  imports: [CommonModule, IonContent, IonIcon, FormsModule, IonSpinner, CategorySelectorComponent, AmountInputComponent ],
 })
 export class RegisterMovementPage {
+  private modalCtrl = inject(ModalController);
+  private currencyService = inject(CurrencyService);
+  private movementFacade = inject(RegisterMovementFacade);
 
-  modalCtrl = inject(ModalController);
+  private categoriesFacade = inject(CategoriesFacade);
 
-  categories: Category[] = [
-    { id: 'food', name: 'Comida', icon: 'cafe-outline', color: '#f97316' },
-    { id: 'transport', name: 'Transporte', icon: 'car-outline', color: '#3b82f6' },
-    { id: 'home', name: 'Hogar', icon: 'home-outline', color: '#8b5cf6' },
-    { id: 'subscriptions', name: 'Suscripciones', icon: 'tv-outline', color: '#ef4444' },
-    { id: 'leisure', name: 'Ocio', icon: 'game-controller-outline', color: '#ec4899' },
-    { id: 'shopping', name: 'Compras', icon: 'card-outline', color: '#6366f1' },
-    { id: 'other', name: 'Otros', icon: 'sparkles-outline', color: '#6b7280' }
-  ];
+  private sessionService = inject(SessionService);
+
+
+  state = signal<UiState<void>>(initialUiState());
+  private toast = inject(ToastService);
+
+  touched = {
+    title: false,
+    amount: false,
+    category: false
+  };
+
 
   selectedCategory = '';
 
-  transactionType: TransactionType = 'expense';
+  transactionType: TransactionType = 'expense'; 
   title = '';
   amount: number | null = null;
   currency: Currency = 'clp';
@@ -63,14 +81,23 @@ export class RegisterMovementPage {
   /* valor UF temporal (solo UI) */
   UF_VALUE = 37850;
 
-  getGridColumns(): number {
-    const count = this.categories.length;
-
-    if (count <= 4) return count;
-    if (count <= 6) return 3;
-
-    return 4;
+  async ngOnInit() {
+    await this.waitForSession();
+    this.categoriesFacade.load();
   }
+
+  private async waitForSession() {
+    await firstValueFrom(
+      this.sessionService.authInitialized$.pipe(
+        filter(initialized => initialized === true)
+      )
+    );
+  }
+
+//==========================
+//=== Controladores UI =====
+//==========================
+
 
   toggleShared() {
     this.isShared = !this.isShared;
@@ -99,88 +126,165 @@ export class RegisterMovementPage {
   }
 
   onAmountInput(value: string) {
-    if (this.currency === 'uf') {
-      this.amount = this.parseUFInput(value);
-      return;
-    }
-
-    const numeric = value.replace(/\D/g, '');
-    this.amount = numeric ? Number(numeric) : null;
-  }
-
-  calculateCLPFromUF() {
-    const ufAmount = this.amount ?? 0;
-    return Math.round(ufAmount * this.UF_VALUE);
-  }
-
-  getUFAmount() {
-    if (this.currency !== 'uf') {
-      return null;
-    }
-
-    return this.UF_VALUE ?? 0;
+    this.amount =
+      this.currency === 'uf'
+        ? this.currencyService.parseUF(value)
+        : this.currencyService.parseCLP(value);
   }
 
   getCLPAmount() {
     if (this.currency === 'uf') {
-      return this.calculateCLPFromUF();
+      return this.currencyService.calculateCLPFromUF(
+        this.amount ?? 0,
+        this.UF_VALUE,
+      );
     }
 
     return this.amount ?? 0;
   }
 
-  getAmountNumber() {
-    return this.getCLPAmount();
+  get displayAmount() {
+    if (this.amount === null) return '';
+
+    return this.currency === 'uf'
+      ? this.currencyService.formatUF(this.amount)
+      : this.currencyService.formatCLP(this.amount);
   }
 
-  submitMovement() {
-
-    if (this.transactionType == 'expense' && this.currency == 'clp' ) {
-        console.log({
-        type: this.transactionType,
-        title: this.title,
-        amount: this.amount,
-        currency: this.currency,
-        category: this.selectedCategory,
-        isShared: this.isShared,
-        sharedExpense: this.sharedExpenseData
-      });
-    }
-
-    if (this.transactionType == 'expense' && this.currency == 'uf' ) {
-    console.log({
-        type: this.transactionType,
-        title: this.title,
-        amount_uf: this.amount,
-        ufAmount: this.getUFAmount(),
-        clpAmount: this.getCLPAmount(),
-        currency: this.currency,
-        category: this.selectedCategory,
-        isShared: this.isShared,
-        sharedExpense: this.sharedExpenseData
-      });
-    }
-
-    if (this.transactionType == 'income' ) {
-        console.log({
-        type: this.transactionType,
-        title: this.title,
-        amount: this.amount,
-        currency: this.currency,
-      });
-    }
-    
+  get categories() {
+    return this.categoriesFacade.state().data ?? [];
   }
+
+//==========================
+//==== Loading ====
+//==========================
+  get isFormValid() {
+    return !!this.amount && !!this.title && !!this.selectedCategory;
+  }
+
+  reloadCategories() {
+    this.categoriesFacade.load();
+  }
+
+  get isSubmitting() {
+    return this.state().loading;
+  }
+
+  get isLoadingCategories() {
+    return this.categoriesFacade.state().loading;
+  }
+
+  get categoriesError() {
+    return this.categoriesFacade.state().error;
+  }
+
+  get skeletonItems() {
+    return Array(8).fill(0);
+  }
+
+
+//==========================
+//====== Validadores ======
+//==========================
+  get isTitleInvalid() {
+    return this.touched.title && !this.title;
+  }
+
+  get isAmountInvalid() {
+    return this.touched.amount && !this.amount;
+  }
+
+  get isCategoryInvalid() {
+    return this.touched.category && !this.selectedCategory;
+  }
+
+  selectCategory(id: string) {
+    this.selectedCategory = id;
+    this.touched.category = true;
+  }
+
+
+  //---------------------------------Correcciones---------------------------------------------------------
+
+  
+
+  private resetForm() {
+    this.title = '';
+    this.amount = null;
+    this.selectedCategory = '';
+    this.isShared = false;
+    this.sharedExpenseData = null;
+    this.currency = 'clp';
+    this.transactionType = 'expense';
+
+    this.touched = {
+      title: false,
+      amount: false,
+      category: false
+    };
+  }
+
+  async submitMovement() {
+    if (!this.isFormValid) {
+      this.touched.title = true;
+      this.touched.amount = true;
+      this.touched.category = true;
+
+      this.toast.error('Completa los campos requeridos');
+      return;
+    }
+
+    this.state.update(setLoading);
+
+
+    try {
+      if (this.amount == null) {
+        throw new Error('Monto requerido');
+      }
+
+      await this.movementFacade.submit({
+        type: this.transactionType,
+        title: this.title,
+        categoryId: this.selectedCategory || undefined,
+        currency: this.currency,
+        amount: this.amount,
+        ufValue: this.currency === 'uf' ? this.UF_VALUE : undefined,
+      });
+
+      this.state.update(state => ({
+        ...state,
+        loading: false,
+        error: null
+      }));
+
+      this.resetForm();
+
+      // Toast Éxito
+      this.toast.success('Movimiento registrado correctamente');
+
+    } catch (error) {
+
+      this.state.update(state => ({
+        ...state,
+        loading: false,
+        error: 'No se pudo registrar el movimiento'
+      }));
+
+      // Toast Error
+      this.toast.error('Error al registrar el movimiento');
+    }
+  }
+  //---------------------------------Correcciones---------------------------------------------------------
 
   async openSharedExpenseModal() {
     const modal = await this.modalCtrl.create({
       component: SharedExpenseModal,
       componentProps: {
-        totalAmount: this.getAmountNumber()
+        totalAmount: this.getCLPAmount(),
       },
       breakpoints: [0, 0.85, 0.9],
       initialBreakpoint: 0.85,
-      expandToScroll: false
+      expandToScroll: false,
     });
 
     await modal.present();
@@ -192,46 +296,5 @@ export class RegisterMovementPage {
     }
   }
 
-  private formatUFDisplay(integerPart: string, decimalPart: string) {
-    if (!integerPart && !decimalPart) {
-      return '';
-    }
 
-    const formattedInteger = integerPart
-      ? new Intl.NumberFormat('es-CL').format(parseInt(integerPart, 10))
-      : '0';
-
-    return decimalPart ? `${formattedInteger},${decimalPart}` : formattedInteger;
-  }
-
-  private parseUFInput(value: string) {
-    const sanitizedValue = value.replace(/[^\d.,]/g, '');
-    const lastCommaIndex = sanitizedValue.lastIndexOf(',');
-
-    if (lastCommaIndex >= 0) {
-      const integerPart = sanitizedValue.slice(0, lastCommaIndex).replace(/[^\d]/g, '');
-      const decimalPart = sanitizedValue.slice(lastCommaIndex + 1).replace(/[^\d]/g, '');
-      const normalizedNumber = decimalPart
-        ? `${integerPart || '0'}.${decimalPart}`
-        : integerPart;
-
-      return normalizedNumber ? Number(normalizedNumber) : null;
-    }
-
-    const integerPart = sanitizedValue.replace(/[^\d]/g, '');
-    return integerPart ? Number(integerPart) : null;
-  }
-
-  get displayAmount() {
-    if (this.amount === null) {
-      return '';
-    }
-
-    if (this.currency === 'uf') {
-      const [integerPart, decimalPart = ''] = this.amount.toString().split('.');
-      return this.formatUFDisplay(integerPart, decimalPart);
-    }
-
-    return new Intl.NumberFormat('es-CL').format(this.amount);
-  }
 }

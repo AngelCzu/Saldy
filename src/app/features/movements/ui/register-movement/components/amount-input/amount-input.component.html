@@ -1,0 +1,74 @@
+<div class="movement-card">
+  <!-- selector moneda -->
+  <div class="currency-selector">
+
+    <label class="movement-card__label">
+      Monto ({{ currency.toUpperCase() }})
+    </label>
+
+    <div class="currency-segment">
+      <div class="currency-segment__slider" [class.uf]="currency === 'uf'"></div>
+
+      <button
+        class="currency-segment__btn"
+        [class.active]="currency === 'clp'"
+        (click)="setCurrency('clp')">
+        CLP
+      </button>
+
+      <button
+        class="currency-segment__btn"
+        [class.active]="currency === 'uf'"
+        (click)="setCurrency('uf')">
+        UF
+      </button>
+    </div>
+  </div>
+
+
+  <!-- input -->
+  <div class="amount-input">
+
+    <input
+      type="text"
+      class="amount-input__field"
+      [attr.inputmode]="currency === 'uf' ? 'decimal' : 'numeric'"
+      placeholder="0"
+      [value]="displayAmount"
+      (input)="onInput($any($event.target).value)"
+      (blur)="onBlur()"
+      [class.invalid]="invalid"
+    />
+
+    <span class="error-text" *ngIf="invalid">
+      Ingresa un monto válido
+    </span>
+
+  </div>
+
+
+  <!-- UF INFO -->
+  <div class="uf-info-card" *ngIf="showUFInfo">
+
+    <div class="uf-info-card__row">
+      <span class="uf-info-card__label">
+        Valor UF hoy
+      </span>
+      <span class="uf-info-card__value">
+        ${{ ufValue | number:'1.0-0':'es-CL' }} CLP
+      </span>
+    </div>
+
+    <div class="uf-info-card__divider" *ngIf="clpAmount"></div>
+
+    <div class="uf-info-card__row" *ngIf="clpAmount">
+      <span class="uf-info-card__label">
+        Total estimado
+      </span>
+      <span class="uf-info-card__total">
+        ${{ clpAmount | number:'1.0-0':'es-CL' }} CLP
+      </span>
+    </div>
+
+  </div>
+</div>

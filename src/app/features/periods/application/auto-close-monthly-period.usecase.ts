@@ -24,8 +24,10 @@ export class AutoCloseMonthlyPeriodUseCase {
     const current = this.timeProvider.currentYearMonth();
     const previous = current.previous();
 
+    const previousId = previous.toString();
+
     const previousPeriod =
-      await this.periodRepository.findByYearMonth(previous);
+      await this.periodRepository.findById(previousId);
 
     let monthClosed = false;
 
@@ -35,9 +37,11 @@ export class AutoCloseMonthlyPeriodUseCase {
       monthClosed = true;
     }
 
-    const currentPeriod =
-      await this.periodRepository.findByYearMonth(current);
+    const currentId = current.toString();
 
+    const currentPeriod =
+      await this.periodRepository.findById(currentId);
+      
     if (!currentPeriod) {
       await this.periodRepository.save(
         MonthlyPeriod.create(current)

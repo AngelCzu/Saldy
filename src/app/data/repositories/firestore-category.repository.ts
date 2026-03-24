@@ -1,8 +1,17 @@
 import { Injectable } from '@angular/core';
-import { doc, getDoc, getDocs, setDoc } from '@angular/fire/firestore';
+import { doc, getDoc, getDocs, setDoc, query, where } from '@angular/fire/firestore';
 import { Category } from 'src/app/domain/entities/category.entity';
 import { CategoryRepository } from 'src/app/domain/repositories/category.repository';
 import { FirestoreDatasource } from '../datasources/firestore.datasource';
+
+interface CategoryDocument {
+  nombre: string;
+  color: string;
+  icon: string;
+  activa: boolean;
+  isSystem: boolean;
+}
+
 
 @Injectable({ providedIn: 'root' })
 export class FirestoreCategoryRepository implements CategoryRepository {
@@ -17,8 +26,14 @@ export class FirestoreCategoryRepository implements CategoryRepository {
   }
 
   async getActive(): Promise<Category[]> {
-    const categories = await this.getAll();
-    return categories.filter(c => c.isActiveCategory());
+    const snapshot = await getDocs(
+      query(
+        this.datasource.userCollection('categorias'),
+        where('activa', '==', true)
+      )
+    );
+
+    return snapshot.docs.map(d => this.toEntity(d.id, d.data()));
   }
 
   async create(category: Category): Promise<void> {
@@ -37,12 +52,25 @@ export class FirestoreCategoryRepository implements CategoryRepository {
     await setDoc(ref, this.toFirestore(category), { merge: true });
   }
 
+  async countActive(): Promise<number> {
+    const snapshot = await getDocs(
+      query(
+        this.datasource.userCollection('categorias'),
+        where('activa', '==', true)
+      )
+    );
+
+    return snapshot.size;
+  }
+
   private toEntity(id: string, data: any): Category {
     return new Category({
       id,
-      name: data.nombre ?? data.name ?? '',
+      name: data.nombre ?? '',
       color: data.color ?? '#6B7280',
-      isActive: data.activa ?? data.isActive ?? true
+      icon: data.icon ?? 'pricetag-outline',
+      isActive: data.activa ?? true,
+      isSystem: data.isSystem ?? false
     });
   }
 
@@ -50,7 +78,9 @@ export class FirestoreCategoryRepository implements CategoryRepository {
     return {
       nombre: category.getName(),
       color: category.getColor(),
-      activa: category.isActiveCategory()
+      icon: category.getIcon(),
+      activa: category.isActiveCategory(),
+      isSystem: category.isSystemCategory()
     };
   }
 }

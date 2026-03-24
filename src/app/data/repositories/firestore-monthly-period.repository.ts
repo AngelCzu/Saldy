@@ -10,18 +10,14 @@ export class FirestoreMonthlyPeriodRepository
   implements MonthlyPeriodRepository {
   constructor(private readonly datasource: FirestoreDatasource) {}
 
-  async findByYearMonth(
-    yearMonth: YearMonth
-  ): Promise<MonthlyPeriod | null> {
-    const id = yearMonth.toString();
+  async findById(id: string): Promise<MonthlyPeriod | null> {
     const ref = this.datasource.userDoc(`periodos/${id}`);
-
     const snapshot = await getDoc(ref);
 
     if (!snapshot.exists()) return null;
 
     return MonthlyPeriod.restore(
-      yearMonth,
+      YearMonth.fromString(id),
       snapshot.data()['cerrado']
     );
   }

@@ -1,5 +1,6 @@
 // Movimientos 
 
+import { MovementValidator } from '../validators/movement.validator';
 import { YearMonth } from '../value-objects/year-month.vo';
 
 export type MovementType =
@@ -8,74 +9,124 @@ export type MovementType =
   | 'GOAL_CONTRIBUTION'      // Metas
   | 'DEBT_PAYMENT';          // Pagos de deudas
 
+  
+
 export class Movement {
   private readonly id?: string;
   private readonly type: MovementType;
-  private readonly amount: number;
+  private readonly amountCLP: number;        // Siempre en CLP (valor real)
+  private readonly currency: 'CLP' | 'UF';
   private readonly yearMonth: YearMonth;
-  private readonly description: string;
+  private readonly title: string;
 
+  private readonly inputAmount?: number;  // Lo que ingresó el usuario
+  private readonly ufValue?: number;         // Valor UF en ese momento
+  private readonly createdAt: Date;
   // Metadatos
   private readonly categoryId?: string;
-  private readonly frequency?: 'UNICA' | 'MENSUAL';
-  private readonly isShared?: boolean;
   private readonly goalId?: string;
   private readonly debtId?: string;
 
   private constructor(params: {
     id?: string;
     type: MovementType;
-    amount: number;
+    amountCLP: number;
+    currency: 'CLP' | 'UF';
     yearMonth: YearMonth;
-    description: string;
+    title: string;
     categoryId?: string;
-    frequency?: 'UNICA' | 'MENSUAL';
-    isShared?: boolean;
+    inputAmount?: number;
+    ufValue?: number;
+    createdAt: Date;
     goalId?: string;
     debtId?: string;
   }) {
-    this.validateAmount(params.amount);
-    this.validateDescription(params.description);
-    this.validateMetadata(params);
 
+    // VALIDACIÓN CENTRALIZADA
+    MovementValidator.validate({
+      type: params.type,
+      title: params.title,
+      amountCLP: params.amountCLP,
+      currency: params.currency,
+      yearMonth: params.yearMonth,
+      createdAt: params.createdAt,
+      categoryId: params.categoryId,
+      goalId: params.goalId,
+      debtId: params.debtId,
+      inputAmount: params.inputAmount,
+      ufValue: params.ufValue,
+    });
+
+    // ASIGNACIONES
     this.id = params.id;
     this.type = params.type;
-    this.amount = params.amount;
+    this.amountCLP = params.amountCLP;
+    this.currency = params.currency;
     this.yearMonth = params.yearMonth;
-    this.description = params.description;
+    this.title = params.title;
     this.categoryId = params.categoryId;
-    this.frequency = params.frequency;
-    this.isShared = params.isShared;
+    this.inputAmount = params.inputAmount;
+    this.ufValue = params.ufValue;
     this.goalId = params.goalId;
     this.debtId = params.debtId;
+    this.createdAt = params.createdAt;
   }
 
-
+  
   // Crear movimiento nuevo (aún no persistido)
-  static create(params: {
+    static create(params: {
     type: MovementType;
-    amount: number;
+    amountCLP: number;
+    currency: 'CLP' | 'UF'; 
     yearMonth: YearMonth;
-    description: string;
+    title: string;
+    inputAmount?: number;
+    ufValue?: number
     categoryId?: string;
-    frequency?: 'UNICA' | 'MENSUAL';
-    isShared?: boolean;
+    createdAt: Date
     goalId?: string;
     debtId?: string;
   }): Movement {
-    return new Movement(params);
+    return new Movement({
+      ...params
+    });
+  }
+
+  static createFromCommand(params: {
+    type: MovementType;
+    title: string;
+    currency: 'CLP' | 'UF';
+    amountCLP?: number;
+    inputAmount?: number;
+    ufValue?: number;
+    yearMonth: YearMonth;
+    createdAt: Date;
+    categoryId?: string;
+  }): Movement {
+
+      let amountCLP =
+      params.currency === 'UF'
+        ? Math.round(params.inputAmount! * params.ufValue!)
+        : params.amountCLP!;
+
+    return Movement.create({
+      ...params,
+      amountCLP
+    });
   }
 
   // Restaurar movimiento desde Firestore 
   static restore(params: {
     id: string;
     type: MovementType;
-    amount: number;
+    amountCLP: number;
+    currency: 'CLP' | 'UF'; 
     yearMonth: YearMonth;
-    description: string;
+    title: string;
+    inputAmount?: number;
+    ufValue?: number
+    createdAt: Date; // obligatorio
     categoryId?: string;
-    frequency?: 'UNICA' | 'MENSUAL';
-    isShared?: boolean;
     goalId?: string;
     debtId?: string;
   }): Movement {
@@ -98,24 +149,35 @@ export class Movement {
   }
 
   getAmount(): number {
-    return this.amount;
+    return this.amountCLP;
   }
 
   getYearMonth(): YearMonth {
     return this.yearMonth;
   }
 
-  getPeriod(): string {
-    return this.yearMonth.toString();
+  getCreatedAt(): Date {
+    return this.createdAt;
   }
 
-
-  getDescription(): string {
-    return this.description;
+  getTitle(): string {
+    return this.title;
   }
 
   getCategoryId(): string | undefined {
     return this.categoryId;
+  }
+
+  getCurrency(): 'CLP' | 'UF' {
+    return this.currency;
+  }
+
+  getOriginalAmount(): number | undefined {
+    return this.inputAmount;
+  }
+
+  getUfValue(): number | undefined {
+    return this.ufValue;
   }
 
   isExpense(): boolean {
@@ -134,45 +196,22 @@ export class Movement {
     return this.type === 'DEBT_PAYMENT';
   }
 
-
-
-
-  
-  // ======================
-  // VALIDACIONES
-  // ======================
-
-  private validateAmount(amount: number): void {
-    if (!Number.isFinite(amount) || amount <= 0) {
-      throw new Error('El monto debe ser mayor a 0.');
-    }
+  isUF(): boolean {
+    return this.currency === 'UF';
   }
 
-  private validateDescription(description: string): void {
-    if (!description || description.trim().length === 0) {
-      throw new Error('La descripción es obligatoria.');
-    }
+  isCLP(): boolean {
+    return this.currency === 'CLP';
   }
 
-  private validateMetadata(params: {
-    type: MovementType;
-    categoryId?: string;
-    goalId?: string;
-    debtId?: string;
-    isShared?: boolean;
-  }): void {
-    if (params.type === 'EXPENSE') {
-      if (!params.categoryId) {
-        throw new Error('Un gasto debe tener categoría.');
-      }
-    }
-
-    if (params.type === 'GOAL_CONTRIBUTION' && !params.goalId) {
-      throw new Error('Un aporte a meta debe tener goalId.');
-    }
-
-    if (params.type === 'DEBT_PAYMENT' && !params.debtId) {
-      throw new Error('Un pago de deuda debe tener debtId.');
-    }
+  getGoalId(): string | undefined {
+    return this.goalId;
   }
+
+  getDebtId(): string | undefined {
+    return this.debtId;
+  }
+
+
+
 }

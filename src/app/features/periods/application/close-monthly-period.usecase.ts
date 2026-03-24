@@ -20,7 +20,8 @@ export class CloseMonthlyPeriodUseCase {
   ) {}
 
   async execute(yearMonth: YearMonth): Promise<CloseMonthResult> {
-    const period = await this.periodRepository.findByYearMonth(yearMonth);
+    const id = yearMonth.toString();
+    const period = await this.periodRepository.findById(id);
 
     if (!period) {
       throw new Error('El período no existe.');
@@ -41,7 +42,8 @@ export class CloseMonthlyPeriodUseCase {
 
     // Crear siguiente
     const next = yearMonth.next();
-    const nextPeriod = await this.periodRepository.findByYearMonth(next);
+    const nextId = next.toString();
+    const nextPeriod = await this.periodRepository.findById(nextId);
 
     if (!nextPeriod) {
       const created = MonthlyPeriod.create(next);

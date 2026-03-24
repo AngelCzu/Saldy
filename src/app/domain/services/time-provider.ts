@@ -3,5 +3,9 @@
 import { YearMonth } from '../value-objects/year-month.vo';
 
 export abstract class TimeProvider {
-  abstract currentYearMonth(): YearMonth;
+  abstract now(): Date;
+
+  currentYearMonth(): YearMonth {
+    return YearMonth.fromDate(this.now());
+  }
 }

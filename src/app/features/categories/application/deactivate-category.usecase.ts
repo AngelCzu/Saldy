@@ -7,9 +7,9 @@ export class DeactivateCategoryUseCase {
 
   constructor(
     private repository: CategoryRepository
-  ) {}
+  ) { }
 
-  async execute(userId: string, categoryId: string) {
+  async execute(categoryId: string) {
 
     const categories = await this.repository.getAll();
 
@@ -23,7 +23,9 @@ export class DeactivateCategoryUseCase {
       id: category.getId(),
       name: category.getName(),
       color: category.getColor(),
-      isActive: false
+      icon: category.getIcon(),
+      isActive: false,
+      isSystem: category.isSystemCategory()
     });
 
     await this.repository.update(updated);

@@ -1,79 +1,65 @@
-import { Movement } from 'src/app/domain/entities/movement.entity';
+import { inject, Injectable } from '@angular/core';
 import { Debt } from 'src/app/domain/entities/debt.entity';
-
-
-import { MovementRepository } from 'src/app/domain/repositories/movement.repository';
 import { DebtRepository } from 'src/app/domain/repositories/debt.repository';
-import { MonthlyPeriodRepository } from 'src/app/domain/repositories/monthly-period.repository';
-
-import { TimeProvider } from 'src/app/domain/services/time-provider';
-import { MonthlyPeriod } from 'src/app/domain/entities/monthly-period.entity';
-import { Inject, Injectable } from '@angular/core';
-import {
-  DEBT_REPOSITORY,
-  MONTHLY_PERIOD_REPOSITORY,
-  MOVEMENT_REPOSITORY
-} from 'src/app/core/providers/tokens';
+import { RegisterMovementCommand, RegisterMovementUseCase } from './register-movement.usecase';
+import { DEBT_REPOSITORY } from 'src/app/core/providers/tokens';
 
 @Injectable({ providedIn: 'root' })
 export class RegisterSharedExpenseUseCase {
-  constructor(
-    @Inject(MOVEMENT_REPOSITORY)
-    private readonly movementRepository: MovementRepository,
-    @Inject(DEBT_REPOSITORY)
-    private readonly debtRepository: DebtRepository,
-    @Inject(MONTHLY_PERIOD_REPOSITORY)
-    private readonly periodRepository: MonthlyPeriodRepository,
-    private readonly timeProvider: TimeProvider
-  ) {}
+
+  private readonly registerMovementUseCase = inject(RegisterMovementUseCase);
+  private readonly debtRepository = inject<DebtRepository>(DEBT_REPOSITORY);
 
   async execute(params: {
-    amount: number;
-    description: string;
-    category: string;
+    movement: RegisterMovementCommand;
     participants: {
       name: string;
       amount: number;
     }[];
   }): Promise<void> {
 
-    // 1️⃣ Período actual
-    const yearMonth = this.timeProvider.currentYearMonth();
+      // Validar que la sumas coincidan con los gastos
+      const total = this.extractTotal(params.movement);
+      const totalParticipants = params.participants.reduce(
+        (sum, p) => sum + p.amount,
+        0
+      );
 
-    let period = await this.periodRepository.findByYearMonth(yearMonth);
+      if (!params.participants || params.participants.length === 0) {
+        throw new Error('Debe haber al menos un participante');
+      }
 
-    // 🔹 Si no existe, se crea automáticamente
-    if (!period) {
-      period = MonthlyPeriod.create(yearMonth);
-      await this.periodRepository.save(period);
+      if (totalParticipants !== total) {
+        throw new Error('La suma de participantes no coincide con el total del gasto');
+      }
+
+      if (params.participants.some(p => p.amount <= 0)) {
+        throw new Error('Los montos deben ser mayores a 0');
+      }
+
+      // Crear movimiento usando el flujo correcto
+      const movementId = await this.registerMovementUseCase.execute(params.movement);
+
+      // Crear deudas
+      const debts = params.participants.map(p =>
+        Debt.create({
+          movementId,
+          debtorName: p.name,
+          amount: p.amount,
+        })
+      );
+
+      await Promise.all(debts.map(d => this.debtRepository.save(d)));
     }
 
-    // 🔹 Si existe pero está cerrado, se bloquea
-    if (period.isClosed()) {
-      throw new Error('El período está cerrado.');
+    private extractTotal(command: RegisterMovementCommand): number {
+    if (command.currency === 'CLP') {
+      return command.amountCLP;
     }
 
-    // 2️⃣ Crear movimiento de gasto
-    const expense = Movement.create({
-      type: 'EXPENSE',
-      amount: params.amount,
-      yearMonth,
-      description: params.description,
-      category: params.category,
-      isShared: true,
-    });
+    // UF → convertir a CLP igual que el dominio
+    return Math.round(command.inputAmount * command.ufValue);
 
-    const movementId = await this.movementRepository.save(expense);
-
-    // 3️⃣ Crear deudas
-    for (const participant of params.participants) {
-      const debt = Debt.create({
-        movementId,
-        debtorName: participant.name,
-        amount: participant.amount,
-      });
-
-      await this.debtRepository.save(debt);
-    }
   }
+
 }

@@ -10,4 +10,5 @@ export abstract class CategoryRepository {
 
   abstract update(category: Category): Promise<void>;
 
+  abstract countActive(): Promise<number>;
 }

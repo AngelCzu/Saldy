@@ -1,54 +1,87 @@
-import { Movement } from "src/app/domain/entities/movement.entity";
+import { Movement, MovementType } from "src/app/domain/entities/movement.entity";
 import { YearMonth } from 'src/app/domain/value-objects/year-month.vo';
+import { Timestamp } from '@angular/fire/firestore';
+
+
+export type MovementDocument = {
+  type: MovementType;
+  amountCLP: number;
+  currency: 'CLP' | 'UF';
+  yearMonth: string;
+  title: string;
+  inputAmount?: number | null;
+  ufValue?: number | null;
+  categoryId?: string | null;
+  goalId?: string | null;
+  debtId?: string | null;
+  createdAt: Timestamp;
+};
 
 export class MovementMapper {
-  static toFirestore(movement: Movement) {
+
+  static toFirestore(movement: Movement): MovementDocument {
     return {
-      periodo: movement.getYearMonth().toString(),
-      tipo: this.mapTypeToFirestore(movement.getType()),
-      monto: movement.getAmount(),
-      descripcion: movement.getDescription(),
-      categoria: movement.getCategoryId() ?? null,
-      frecuencia: movement['frequency'] ?? null,
-      compartido: movement['isShared'] ?? false,
-      metaId: movement['goalId'] ?? null,
-      deudaId: movement['debtId'] ?? null,
-      creadoEn: new Date().toISOString(),
+      type: movement.getType(),
+      amountCLP: movement.getAmount(),
+      currency: movement.getCurrency(),
+      yearMonth: movement.getYearMonth().toString(),
+      title: movement.getTitle(),
+
+      inputAmount: movement.getOriginalAmount() ?? null,
+      ufValue: movement.getUfValue() ?? null,
+
+      categoryId: movement.getCategoryId() ?? null,
+      goalId: movement.getGoalId() ?? null,   
+      debtId: movement.getDebtId() ?? null,
+
+      createdAt: Timestamp.fromDate(movement.getCreatedAt()),
     };
   }
 
-  static fromFirestore(id: string, data: any): Movement {
+  static fromFirestore(id: string, data: MovementDocument): Movement {
+    if (!data.createdAt) {
+      throw new Error('createdAt inválido en Firestore');
+    }
+
+    if (
+      !data.type ||
+      !data.amountCLP ||
+      !data.yearMonth ||
+      !data.currency ||
+      !data.title ||
+      !data.createdAt
+    ) {
+      throw new Error('Documento corrupto en Firestore');
+    }
+
+    if (!Number.isFinite(data.amountCLP)) {
+      throw new Error('amountCLP inválido');
+    }
+
     return Movement.restore({
       id,
-      type: this.mapTypeFromFirestore(data.tipo),
-      amount: data.monto,
-      yearMonth: YearMonth.fromString(data.periodo),
-      description: data.descripcion,
-      categoryId: data.categoria ?? undefined,
-      frequency: data.frecuencia ?? undefined,
-      isShared: data.compartido ?? false,
-      goalId: data.metaId ?? undefined,
-      debtId: data.deudaId ?? undefined,
+      type: this.toMovementType(data.type),
+      amountCLP: data.amountCLP,
+      currency: this.toCurrency(data.currency),
+      yearMonth: YearMonth.fromString(data.yearMonth),
+      title: data.title,
+
+      inputAmount: data.inputAmount ?? undefined,
+      ufValue: data.ufValue ?? undefined,
+
+      categoryId: data.categoryId ?? undefined,
+      goalId: data.goalId ?? undefined,
+      debtId: data.debtId ?? undefined,
+
+      createdAt: data.createdAt.toDate(),
     });
   }
 
-  private static mapTypeToFirestore(type: string): string {
-    const map: Record<string, string> = {
-      INCOME: 'INGRESO',
-      EXPENSE: 'GASTO',
-      GOAL_CONTRIBUTION: 'APORTE_META',
-      DEBT_PAYMENT: 'PAGO_DEUDA',
-    };
-    return map[type];
+  private static toMovementType(value: MovementType): MovementType {
+    return value;
   }
 
-  private static mapTypeFromFirestore(type: string): any {
-    const map: Record<string, any> = {
-      INGRESO: 'INCOME',
-      GASTO: 'EXPENSE',
-      APORTE_META: 'GOAL_CONTRIBUTION',
-      PAGO_DEUDA: 'DEBT_PAYMENT',
-    };
-    return map[type];
+  private static toCurrency(value: 'CLP' | 'UF'): 'CLP' | 'UF' {
+    return value;
   }
 }

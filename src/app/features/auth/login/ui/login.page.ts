@@ -8,6 +8,7 @@ import { Auth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
 import { LoginUseCase } from '../../application/login.usecase';
+import { SessionService } from 'src/app/core/session/session.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -22,6 +23,7 @@ export class LoginPage implements OnInit {
   showPassword = false;
 
   private loginUseCase = inject(LoginUseCase);
+  private sessionService = inject(SessionService)
 
    constructor(
     private auth: Auth,
@@ -38,7 +40,12 @@ export class LoginPage implements OnInit {
   async login() {
     try {
       await this.loginUseCase.execute(this.email, this.password);
+
+      // Inicializa en paralelo
+      this.sessionService.initSession();
+
       await this.router.navigateByUrl('/home');
+
     } catch (error) {
       console.error(error);
     }

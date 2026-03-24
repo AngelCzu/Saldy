@@ -1,0 +1,142 @@
+// ------------------ Input-Monto ------------------
+.movement-card__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.movement-card {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.amount-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid #e5e7eb; 
+}
+
+.amount-input:focus-within {
+  border-bottom-color: #0d9488;
+}
+
+
+
+.amount-input__field {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 30px;
+  font-weight: 600;
+  min-height: 36px;
+  background: transparent;
+  color: #111827;
+}
+
+
+.amount-input__field::placeholder {
+  color: #9ca3af;
+}
+
+
+.amount-input__currency {
+  width: 38px;     
+  text-align: right;
+  font-size: 16px;
+  color: #6b7280;
+}
+
+.currency-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.currency-segment {
+  position: relative;
+  display: flex;
+  padding: 4px;
+  border-radius: 10px;
+  background: #e7eaed;
+}
+
+
+.currency-segment__slider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: #0d9488;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+}
+
+.currency-segment__slider.uf {
+  transform: translateX(100%);
+}
+
+.currency-segment__btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  position: relative;
+  z-index: 2;
+  transition: color 0.2s;
+}
+
+.currency-segment__btn.active {
+  color: white;
+}
+
+.uf-info-card {
+  background: rgba(13,148,136,0.08);
+  border: 1px solid rgba(13,148,136,0.2);
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.uf-info-card__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.uf-info-card__label {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.uf-info-card__value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0d9488;
+}
+
+.uf-info-card__total {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0d9488;
+}
+
+.uf-info-card__divider {
+  height: 1px;
+  background: rgba(13,148,136,0.2);
+}

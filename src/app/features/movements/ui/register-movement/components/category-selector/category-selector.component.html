@@ -1,0 +1,72 @@
+<div class="movement-card-category">
+  <label class="movement-card__label">
+    Categoría
+  </label>
+
+  <!-- LOADING -->
+  <ng-container *ngIf="loading">
+
+    <div class="category-grid"
+        [class.invalid]="invalid"
+        [style.gridTemplateColumns]="'repeat(' + computedColumns + ', 1fr)'">
+
+      <div class="category-item skeleton"
+          *ngFor="let i of skeletonItems">
+
+        <div class="category-item__icon skeleton-icon"></div>
+        <span class="category-item__name skeleton-text"></span>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
+
+  <!-- ERROR -->
+  <ng-container *ngIf="!loading && error">
+
+    <div class="category-error">
+
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <p>Error al cargar categorías</p>
+
+      <button (click)="onRetry()">
+        Reintentar
+      </button>
+
+    </div>
+
+  </ng-container>
+
+
+  <!-- DATA -->
+  <ng-container *ngIf="!loading && !error">
+
+    <div class="category-grid"
+        [class.invalid]="invalid"
+        [style.gridTemplateColumns]="'repeat(' + computedColumns + ', 1fr)'">
+
+      <button *ngFor="let category of categories"
+              class="category-item"
+              [class.active]="selectedId === category.id"
+              (click)="onSelect(category.id)">
+
+        <div class="category-item__icon" [style.background]="category.color">
+          <ion-icon [name]="category.icon"></ion-icon>
+        </div>
+
+        <span class="category-item__name">
+          {{ category.name }}
+        </span>
+
+      </button>
+
+    </div>
+
+    <span class="error-text" *ngIf="invalid">
+      Selecciona una categoría
+    </span>
+
+  </ng-container>
+</div>

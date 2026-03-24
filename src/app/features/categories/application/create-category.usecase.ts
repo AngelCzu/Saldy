@@ -10,15 +10,14 @@ export class CreateCategoryUseCase {
   ) {}
 
   async execute(params: {
-    userId: string;
     name: string;
     color: string;
+    icon: string;
   }) {
 
-    const activeCategories =
-      await this.repository.getActive(params.userId);
+    const activeCategories = await this.repository.countActive();
 
-    if (activeCategories.length >= 7) {
+    if (activeCategories >= 7) {
       throw new Error('Máximo 7 categorías activas.');
     }
 
@@ -26,9 +25,11 @@ export class CreateCategoryUseCase {
       id: crypto.randomUUID(),
       name: params.name,
       color: params.color,
-      isActive: true
+      icon: params.icon,
+      isActive: true,
+      isSystem: false
     });
 
-    await this.repository.create(params.userId, category);
+    await this.repository.create(category);
   }
 }

@@ -25,7 +25,8 @@ export const routes: Routes = [
     path: 'login',
     canActivate: [GuestGuard],
     loadComponent: () => import('./features/auth/login/ui/login.page').then( m => m.LoginPage)
-  },  {
+  },
+  {
     path: 'register-movement',
     loadComponent: () => import('./features/movements/ui/register-movement/register-movement.page').then( m => m.RegisterMovementPage)
   },

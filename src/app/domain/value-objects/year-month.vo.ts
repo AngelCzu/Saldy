@@ -62,6 +62,12 @@ export class YearMonth {
     );
   }
 
+  static fromDate(date: Date): YearMonth {
+  return new YearMonth(
+    date.getFullYear(),
+    date.getMonth() + 1 // JS months 0-11
+  );
+}
 
   // ======================
   // COMPARACIÓN AVANZADA

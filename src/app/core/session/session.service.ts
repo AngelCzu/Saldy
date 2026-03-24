@@ -1,8 +1,9 @@
 // Sesion de usuarios 
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Auth, onAuthStateChanged, User } from '@angular/fire/auth';
 import { BehaviorSubject } from 'rxjs';
+import { EnsureUserCategoriesUseCase } from 'src/app/features/categories/application/ensure-user-categories.usecase';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +11,8 @@ import { BehaviorSubject } from 'rxjs';
 export class SessionService {
   private _user = new BehaviorSubject<User | null>(null);
   private _authInitialized = new BehaviorSubject<boolean>(false);
+
+  private ensureCategories = inject(EnsureUserCategoriesUseCase);
 
   readonly user$ = this._user.asObservable();
   readonly authInitialized$ = this._authInitialized.asObservable();
@@ -44,5 +47,8 @@ export class SessionService {
   }
 
 
+  async initSession() {
+    await this.ensureCategories.execute();
+  }
 
 }
