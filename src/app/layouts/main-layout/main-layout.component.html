@@ -1,29 +1,29 @@
-<ion-page>
+<ion-tabs>
+  <ion-tab-bar slot="bottom" class="custom-tab-bar">
+    
+    <ion-tab-button tab="home">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>Inicio</ion-label>
+    </ion-tab-button>
 
-  <ion-content>
-    <ion-router-outlet></ion-router-outlet>
-  </ion-content>
+    <ion-tab-button tab="analysis">
+      <ion-icon name="stats-chart-outline"></ion-icon>
+      <ion-label>Análisis</ion-label>
+    </ion-tab-button>
 
-  <ion-footer>
-    <ion-toolbar>
+    <ion-tab-button class="add" tab="register-movement">
+      <ion-icon name="add"></ion-icon>
+    </ion-tab-button>
 
-      <div class="nav-bar">
+    <ion-tab-button tab="goals">
+      <ion-icon name="target-outline"></ion-icon>
+      <ion-label>Metas</ion-label>
+    </ion-tab-button>
 
-        <button routerLink="/home">
-          <ion-icon name="home-outline"></ion-icon>
-        </button>
+    <ion-tab-button tab="profile">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>Perfil</ion-label>
+    </ion-tab-button>
 
-        <button routerLink="/register-movement">
-          <ion-icon name="add-circle-outline"></ion-icon>
-        </button>
-
-        <button routerLink="/analysis">
-          <ion-icon name="analytics-outline"></ion-icon>
-        </button>
-
-      </div>
-
-    </ion-toolbar>
-  </ion-footer>
-
-</ion-page>
+  </ion-tab-bar>
+</ion-tabs>

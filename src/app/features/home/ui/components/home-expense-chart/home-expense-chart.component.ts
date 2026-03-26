@@ -64,13 +64,19 @@ export class HomeExpenseChartComponent implements AfterViewInit, OnChanges{
   }
 
   private buildChart() {
+    console.log('construyendo el grafico');
+    
 
     if (!this.categories || this.categories.length === 0) {
       this.hasData = false;
+      
       return;
     }
 
-    if (!this.expensesCanvas) return;
+    if (!this.expensesCanvas){
+      console.log('Sin canvas');
+      return;
+    } 
 
     this.hasData = true;
 

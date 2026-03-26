@@ -3,13 +3,8 @@ import { UiState, initialUiState, setLoading, setData, setError } from 'src/app/
 
 import { CategoryCacheService } from './category-cache.service';
 import { EnsureUserCategoriesUseCase } from './ensure-user-categories.usecase';
+import { CategoryVM } from '../models/category.model';
 
-interface CategoryVM {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-}
 
 @Injectable({ providedIn: 'root' })
 export class CategoriesFacade {

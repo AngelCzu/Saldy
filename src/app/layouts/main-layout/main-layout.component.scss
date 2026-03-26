@@ -1,0 +1,45 @@
+// main-layout.component.scss
+
+.ion-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.ion-content-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden; // El scroll lo maneja la página hija
+}
+
+.custom-tab-bar {
+  --background: #ffffff;
+  --border-style: solid;
+  border-top: 1px solid #f3f4f6;
+  height: 70px; // Un poco más alto para el diseño moderno
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+    justify-items: center;
+}
+
+
+
+.add {
+  background: #0D9488;
+  color: white;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 4px 15px rgba(13, 148, 136, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}

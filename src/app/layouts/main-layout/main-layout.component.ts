@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonTabs } from '@ionic/angular/standalone';
-import { RouterModule } from '@angular/router';
+import { IonTabBar, IonTabButton, IonIcon, IonLabel, IonTabs } from '@ionic/angular/standalone';
+
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonTabs, RouterModule],
-  templateUrl: './main-layout.component.html'
+  templateUrl: './main-layout.component.html',
+  styleUrls: ['./main-layout.component.scss'],
+  imports: [IonTabBar, IonTabButton, IonIcon, IonLabel, IonTabs]
 })
 export class MainLayoutComponent {}
