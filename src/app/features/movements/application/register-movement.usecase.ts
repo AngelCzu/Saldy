@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { inject, Inject, Injectable } from '@angular/core';
 import { MovementRepository } from 'src/app/domain/repositories/movement.repository';
 import { Movement } from 'src/app/domain/entities/movement.entity';
 import { YearMonth } from 'src/app/domain/value-objects/year-month.vo';
@@ -7,6 +7,7 @@ import { MONTHLY_PERIOD_REPOSITORY, MOVEMENT_REPOSITORY } from 'src/app/core/pro
 import { MonthlyPeriodRepository } from 'src/app/domain/repositories/monthly-period.repository';
 import { MonthlyPeriod } from 'src/app/domain/entities/monthly-period.entity';
 import { MovementType } from 'src/app/domain/entities/movement.entity';
+import { IdempotencyService } from 'src/app/core/services/idempotency.service';
 
 type BaseCommand = {
   type: MovementType;
@@ -28,10 +29,14 @@ type UFCommand = {
   amountCLP?: never;
 };
 
-export type RegisterMovementCommand = BaseCommand & (CLPCommand | UFCommand);
+export type RegisterMovementCommand = BaseCommand & (CLPCommand | UFCommand) & {
+  isShared?: boolean;
+};
 
 @Injectable({ providedIn: 'root' })
 export class RegisterMovementUseCase {
+
+  private idempotency = inject(IdempotencyService)
 
   constructor(
     @Inject(MOVEMENT_REPOSITORY)
@@ -43,25 +48,27 @@ export class RegisterMovementUseCase {
     private readonly timeProvider: TimeProvider
   ) {}
 
-  async execute(command: RegisterMovementCommand): Promise<string> {
-    try {
-      this.validateCommand(command);
+  async execute(command: RegisterMovementCommand, key: string): Promise<string> {
+    return this.idempotency.execute(key, async () => {
+      try {
 
-      const now = this.timeProvider.now();
-      const yearMonth = YearMonth.fromDate(now);
 
-      const period = await this.getOrCreatePeriod(yearMonth);
+        const now = this.timeProvider.now();
+        const yearMonth = YearMonth.fromDate(now);
 
-      this.ensurePeriodIsOpen(period);
+        const period = await this.getOrCreatePeriod(yearMonth);
 
-      const movement = this.buildMovement(command, now, yearMonth);
+        this.ensurePeriodIsOpen(period);
 
-      return await this.repository.save(movement);
+        const movement = this.buildMovement(command, now, yearMonth);
 
-    } catch (error) {
-      console.error('[RegisterMovementUseCase] Error', error);
-      throw error;
-    }
+        return await this.repository.save(movement);
+
+      } catch (error) {
+        console.error('[RegisterMovementUseCase] Error', error);
+        throw error;
+      }
+    });
   }
 
   // ======================

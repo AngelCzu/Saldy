@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, setDoc } from '@angular/fire/firestore';
+import { collection, doc, getDoc, setDoc, writeBatch } from '@angular/fire/firestore';
 import { getDocs, query, where } from '@angular/fire/firestore';
 import { DebtRepository } from 'src/app/domain/repositories/debt.repository';
 import { Debt } from 'src/app/domain/entities/debt.entity';
@@ -31,11 +31,24 @@ export class FirestoreDebtRepository implements DebtRepository {
   async countPending(): Promise<number> {
     const q = query(
       this.datasource.userCollection('deudas'),
-      where('pendiente', '==', true)
+      where('status', '==', 'pending')
     );
 
     const snapshot = await getDocs(q);
     return snapshot.size;
+  }
+
+  async saveMany(debts: Debt[]): Promise<void> {
+    if (!debts.length) return;
+    
+    const batch = writeBatch(this.datasource.getFirestoreInstance());
+
+    debts.forEach(debt => {
+      const ref = doc(this.datasource.userCollection('deudas'));
+      batch.set(ref, DebtMapper.toFirestore(debt));
+    });
+
+    await batch.commit();
   }
 
 }

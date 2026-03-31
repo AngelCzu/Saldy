@@ -1,18 +1,22 @@
-// Deudores 
+type DebtStatus = 'pending' | 'paid';
 
 export class Debt {
   private readonly id?: string;
   private readonly movementId: string;
+  private readonly debtorId: string;
   private readonly debtorName: string;
   private readonly amount: number;
-  private paid: boolean;
+  private status: DebtStatus;
+  private readonly createdAt: Date;
 
   private constructor(params: {
     id?: string;
     movementId: string;
+    debtorId: string;
     debtorName: string;
     amount: number;
-    paid: boolean;
+    status: DebtStatus;
+    createdAt: Date;
   }) {
     this.validateMovementId(params.movementId);
     this.validateDebtorName(params.debtorName);
@@ -20,103 +24,97 @@ export class Debt {
 
     this.id = params.id;
     this.movementId = params.movementId;
+    this.debtorId = params.debtorId;
     this.debtorName = params.debtorName;
     this.amount = params.amount;
-    this.paid = params.paid;
+    this.status = params.status;
+    this.createdAt = params.createdAt;
   }
 
-
-  // Crear una deuda nueva (pendiente) 
   static create(params: {
     movementId: string;
+    debtorId: string;
     debtorName: string;
     amount: number;
   }): Debt {
     return new Debt({
       movementId: params.movementId,
+      debtorId: params.debtorId,
       debtorName: params.debtorName,
       amount: params.amount,
-      paid: false,
+      status: 'pending',
+      createdAt: new Date(),
     });
   }
 
-  // Restaurar deuda desde Firestore 
   static restore(params: {
     id: string;
     movementId: string;
+    debtorId: string;
     debtorName: string;
     amount: number;
-    paid: boolean;
+    status: DebtStatus;
+    createdAt: Date;
   }): Debt {
     return new Debt(params);
   }
-
-
-
 
   // ======================
   // GETTERS
   // ======================
 
-  getId(): string | undefined {
+  getId() {
     return this.id;
   }
-
-  getMovementId(): string {
+  getMovementId() {
     return this.movementId;
   }
-
-  getDebtorName(): string {
+  getDebtorId() {
+    return this.debtorId;
+  }
+  getDebtorName() {
     return this.debtorName;
   }
-
-  getAmount(): number {
+  getAmount() {
     return this.amount;
   }
-
-  isPaid(): boolean {
-    return this.paid;
+  getStatus() {
+    return this.status;
+  }
+  getCreatedAt() {
+    return this.createdAt;
   }
 
-
-
-
+  isPaid() {
+    return this.status === 'paid';
+  }
 
   // ======================
-  // COMPORTAMIENTO
+  // BEHAVIOR
   // ======================
 
-  markAsPaid(): void {
-    if (this.paid) {
-      throw new Error('La deuda ya está pagada.');
+  markAsPaid() {
+    if (this.status === 'paid') {
+      throw new Error('La deuda ya está pagada');
     }
-
-    this.paid = true;
+    this.status = 'paid';
   }
 
-
-
-
-  
   // ======================
-  // VALIDACIONES
+  // VALIDATIONS
   // ======================
 
-  private validateMovementId(movementId: string): void {
-    if (!movementId || movementId.trim().length === 0) {
-      throw new Error('La deuda debe estar asociada a un movimiento.');
-    }
+  private validateMovementId(movementId: string) {
+    if (!movementId) throw new Error('movementId requerido');
   }
 
-  private validateDebtorName(name: string): void {
-    if (!name || name.trim().length === 0) {
-      throw new Error('El nombre del deudor es obligatorio.');
-    }
+  private validateDebtorName(name: string) {
+    if (!name?.trim()) throw new Error('Nombre requerido');
   }
 
-  private validateAmount(amount: number): void {
+  private validateAmount(amount: number) {
     if (!Number.isFinite(amount) || amount <= 0) {
-      throw new Error('El monto de la deuda debe ser mayor a 0.');
+      throw new Error('Monto inválido');
     }
   }
 }

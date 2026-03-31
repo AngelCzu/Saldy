@@ -11,7 +11,7 @@
   </div>
 
   <!-- FORM -->
-  <div class="login-form">
+  <form class="login-form" (ngSubmit)="login()">
 
     <!-- EMAIL -->
     <div class="input-group">
@@ -19,6 +19,7 @@
       <div class="input-wrapper">
         <ion-icon name="mail-outline"></ion-icon>
         <ion-input
+          name="email"
           type="email"
           [(ngModel)]="email"
           placeholder="tu@email.com"
@@ -33,6 +34,7 @@
         <ion-icon name="lock-closed-outline"></ion-icon>
 
         <ion-input
+          name="password"
           [type]="showPassword ? 'text' : 'password'"
           [(ngModel)]="password"
           placeholder="••••••••"
@@ -50,7 +52,7 @@
       ¿Olvidaste tu contraseña?
     </div>
 
-    <ion-button expand="block" class="btn-login" (click)="login()">
+    <ion-button expand="block" class="btn-login" type="submit">
       Iniciar Sesión
     </ion-button>
 
@@ -75,6 +77,6 @@
       <span>Regístrate</span>
     </div>
 
-  </div>
+  </form>
 
 </ion-content>

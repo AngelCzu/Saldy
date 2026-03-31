@@ -1,32 +1,44 @@
 import { Injectable, inject } from '@angular/core';
 import { RegisterMovementUseCase } from './register-movement.usecase';
 import { buildMovementCommand } from '../adapters/movement-command.adapter';
+import { RegisterSharedExpenseUseCase } from './register-shared-expense.usecase';
+import { SubmitMovementData } from '../models/submit-movement.model';
+import { CurrencyService } from 'src/app/core/services/currency.service';
 
-interface RegisterMovementInput {
-  type: 'income' | 'expense';
-  title: string;
-  categoryId?: string;
-  currency: 'clp' | 'uf';
-  amount: number;
-  ufValue?: number;
-}
 
 @Injectable({ providedIn: 'root' })
 export class RegisterMovementFacade {
 
   private registerMovement = inject(RegisterMovementUseCase);
+  private registerShared = inject(RegisterSharedExpenseUseCase);
+  private currencyService = inject(CurrencyService);
 
-  async submit(input: RegisterMovementInput): Promise<string> {
+  async submitMovement(data: SubmitMovementData): Promise<void> {
+    const key = crypto.randomUUID();
+    // Obtener UF REAL solo si es necesario
+    const ufValue =
+      data.currency === 'uf'
+        ? await this.currencyService.getUF()
+        : undefined;
 
     const command = buildMovementCommand({
-      type: input.type,
-      title: input.title,
-      categoryId: input.categoryId,
-      currency: input.currency,
-      amount: input.amount,
-      ufValue: input.ufValue,
+      type: data.type,
+      title: data.title,
+      categoryId: data.categoryId,
+      currency: data.currency,
+      amount: data.amount,
+      ufValue,
+      isShared: data.isShared
     });
 
-    return this.registerMovement.execute(command);
+    if (data.isShared && data.sharedData) {
+      return this.registerShared.execute({
+        movement: command,
+        sharedData: data.sharedData
+      }, key);
+    }
+
+    await this.registerMovement.execute(command, key);
   }
+
 }

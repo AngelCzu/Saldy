@@ -1,5 +1,6 @@
 // Movimientos 
 
+import { SharedExpenseData } from 'src/app/features/movements/models/shared-expense.model';
 import { MovementValidator } from '../validators/movement.validator';
 import { YearMonth } from '../value-objects/year-month.vo';
 
@@ -26,8 +27,12 @@ export class Movement {
   private readonly categoryId?: string;
   private readonly goalId?: string;
   private readonly debtId?: string;
+  private readonly isShared?: boolean;
+   private readonly sharedData?: SharedExpenseData;
 
-  private constructor(params: {
+  private constructor(
+    
+    params: {
     id?: string;
     type: MovementType;
     amountCLP: number;
@@ -40,7 +45,11 @@ export class Movement {
     createdAt: Date;
     goalId?: string;
     debtId?: string;
+    isShared?: boolean
+    sharedData?: SharedExpenseData
+    
   }) {
+    this.isShared = params.isShared;
 
     // VALIDACIÓN CENTRALIZADA
     MovementValidator.validate({
@@ -55,6 +64,9 @@ export class Movement {
       debtId: params.debtId,
       inputAmount: params.inputAmount,
       ufValue: params.ufValue,
+      isShared: params.isShared,
+      sharedData: params.sharedData
+      
     });
 
     // ASIGNACIONES
@@ -70,6 +82,8 @@ export class Movement {
     this.goalId = params.goalId;
     this.debtId = params.debtId;
     this.createdAt = params.createdAt;
+    this.isShared = params.isShared;
+    this.sharedData = params.sharedData;
   }
 
   
@@ -86,9 +100,11 @@ export class Movement {
     createdAt: Date
     goalId?: string;
     debtId?: string;
+    isShared?: boolean;
+    sharedData?: SharedExpenseData;
   }): Movement {
     return new Movement({
-      ...params
+      ...params,
     });
   }
 
@@ -102,6 +118,8 @@ export class Movement {
     yearMonth: YearMonth;
     createdAt: Date;
     categoryId?: string;
+    isShared?: boolean;
+    sharedData?: SharedExpenseData;
   }): Movement {
 
       let amountCLP =
@@ -111,7 +129,10 @@ export class Movement {
 
     return Movement.create({
       ...params,
-      amountCLP
+      amountCLP,
+      isShared: params.isShared,
+      sharedData: params.sharedData
+
     });
   }
 
@@ -129,6 +150,7 @@ export class Movement {
     categoryId?: string;
     goalId?: string;
     debtId?: string;
+    isShared?: boolean;
   }): Movement {
     return new Movement(params);
   }
@@ -212,6 +234,9 @@ export class Movement {
     return this.debtId;
   }
 
+  isSharedExpense(): boolean {
+    return !!this.isShared;
+  }
 
 
 }

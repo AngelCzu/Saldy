@@ -10,6 +10,7 @@ type UIForm = {
   currency: UICurrency;
   amount: number;
   ufValue?: number;
+  isShared?: boolean;
 };
 
 const typeMap: Record<UIType, RegisterMovementCommand['type']> = {
@@ -53,6 +54,7 @@ export function buildMovementCommand(form: UIForm): RegisterMovementCommand {
       ...base,
       currency: 'CLP',
       amountCLP: form.amount,
+      isShared: form.isShared
     };
   }
 
@@ -72,5 +74,6 @@ export function buildMovementCommand(form: UIForm): RegisterMovementCommand {
     currency: 'UF',
     inputAmount: form.amount,
     ufValue: form.ufValue,
+    isShared: form.isShared
   };
 }

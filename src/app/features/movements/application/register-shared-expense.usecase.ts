@@ -1,65 +1,97 @@
 import { inject, Injectable } from '@angular/core';
 import { Debt } from 'src/app/domain/entities/debt.entity';
-import { DebtRepository } from 'src/app/domain/repositories/debt.repository';
-import { RegisterMovementCommand, RegisterMovementUseCase } from './register-movement.usecase';
-import { DEBT_REPOSITORY } from 'src/app/core/providers/tokens';
+import {
+  RegisterMovementCommand,
+  RegisterMovementUseCase,
+} from './register-movement.usecase';
+import { SharedExpenseData } from '../models/shared-expense.model';
+import { MovementValidator } from 'src/app/domain/validators/movement.validator';
+import { MOVEMENT_REPOSITORY } from 'src/app/core/providers/tokens';
+import { Movement } from 'src/app/domain/entities/movement.entity';
 
+import { TimeProvider } from 'src/app/domain/services/time-provider';
+import { GetOrCreateCurrentPeriodUseCase } from '../../periods/application/GetOrCreateCurrentPeriodUseCase';
+import { YearMonth } from 'src/app/domain/value-objects/year-month.vo';
+import { IdempotencyService } from 'src/app/core/services/idempotency.service';
 @Injectable({ providedIn: 'root' })
 export class RegisterSharedExpenseUseCase {
+  private readonly movementRepository = inject(MOVEMENT_REPOSITORY);
+  private readonly getOrCreatePeriodUseCase = inject(GetOrCreateCurrentPeriodUseCase);
+  private readonly timeProvider = inject(TimeProvider);
 
-  private readonly registerMovementUseCase = inject(RegisterMovementUseCase);
-  private readonly debtRepository = inject<DebtRepository>(DEBT_REPOSITORY);
+  private idempotency = inject(IdempotencyService)
+
+  private buildKey(params: {
+    movement: RegisterMovementCommand;
+    sharedData: SharedExpenseData;
+  }): string {
+
+    const amount =
+      params.movement.currency === 'CLP'
+        ? params.movement.amountCLP
+        : params.movement.inputAmount;
+
+    return `shared-${params.movement.title}-${amount}-${params.sharedData.participants.length}`;
+  }
 
   async execute(params: {
     movement: RegisterMovementCommand;
-    participants: {
-      name: string;
-      amount: number;
-    }[];
-  }): Promise<void> {
+    sharedData: SharedExpenseData;
+  },key?: string ): Promise<void> {
 
-      // Validar que la sumas coincidan con los gastos
-      const total = this.extractTotal(params.movement);
-      const totalParticipants = params.participants.reduce(
-        (sum, p) => sum + p.amount,
-        0
+    const finalKey = key ?? this.buildKey(params);
+
+
+    return this.idempotency.execute(finalKey, async () => {
+      const { sharedData } = params;
+
+      // =========================
+      // VALIDACIONES SERIAS
+      // =========================
+
+      const now = this.timeProvider.now();
+      const yearMonth = this.timeProvider.currentYearMonth();
+
+
+      // =========================
+      // CREAR MOVIMIENTO (SIN GUARDAR)
+      // =========================
+
+      const period = await this.getOrCreatePeriodUseCase.execute();
+
+      if (period.isClosed()) {
+        throw new Error('El período está cerrado.');
+      }
+
+
+      const debts = MovementValidator.extractDebts(sharedData);
+
+      
+      const movement = Movement.createFromCommand({
+        ...params.movement,
+        yearMonth,
+        createdAt: now,
+        isShared: true,
+        sharedData: params.sharedData
+      });
+
+      // =========================
+      // ==== Guardado Atomico ====
+      // =========================
+      await this.movementRepository.saveSharedExpense(movement, (movementId) =>
+        debts.map(d =>
+          Debt.create({
+            movementId,
+            ...d
+          })
+        )
       );
 
-      if (!params.participants || params.participants.length === 0) {
-        throw new Error('Debe haber al menos un participante');
-      }
 
-      if (totalParticipants !== total) {
-        throw new Error('La suma de participantes no coincide con el total del gasto');
-      }
 
-      if (params.participants.some(p => p.amount <= 0)) {
-        throw new Error('Los montos deben ser mayores a 0');
-      }
 
-      // Crear movimiento usando el flujo correcto
-      const movementId = await this.registerMovementUseCase.execute(params.movement);
-
-      // Crear deudas
-      const debts = params.participants.map(p =>
-        Debt.create({
-          movementId,
-          debtorName: p.name,
-          amount: p.amount,
-        })
-      );
-
-      await Promise.all(debts.map(d => this.debtRepository.save(d)));
-    }
-
-    private extractTotal(command: RegisterMovementCommand): number {
-    if (command.currency === 'CLP') {
-      return command.amountCLP;
-    }
-
-    // UF → convertir a CLP igual que el dominio
-    return Math.round(command.inputAmount * command.ufValue);
-
+    });
   }
 
+  
 }

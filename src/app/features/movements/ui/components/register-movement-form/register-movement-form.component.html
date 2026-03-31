@@ -1,3 +1,164 @@
-<p>
-  register-movement-form works!
-</p>
+
+
+<form [formGroup]="form">
+  <div class="content">
+    <!-- Selector tipo movimiento -->
+    <div class="movement-container">
+
+      <!-- Segmented Control -->
+      <div class="movement-segment">
+
+        <div class="movement-segment__slider" [class.expense]="type === 'expense'"></div>
+
+        <button class="movement-segment__btn" [class.active]="type === 'income'"
+          (click)="setTransaction('income')">
+          <ion-icon name="trending-up-outline"></ion-icon>
+          <span>Ingreso</span>
+        </button>
+
+        <button class="movement-segment__btn" [class.active]="type === 'expense'"
+          (click)="setTransaction('expense')">
+          <ion-icon name="trending-down-outline"></ion-icon>
+          <span>Gasto</span>
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- Gastos -->
+    <ng-container *ngIf="type == 'expense'">
+      <!-- Input Movimiento -->
+      <div class="movement-container">
+        <div class="movement-card">
+
+          <label class="movement-card__label">
+            Título del movimiento
+          </label>
+
+          <input class="movement-card__input" type="text" placeholder="Ej: Supermercado, Plan celular"
+            formControlName="title" (blur)="form.get('title')?.markAsTouched()"/>
+
+          <span class="error-text" *ngIf="isInvalid('title')">
+            El título es obligatorio
+          </span>
+
+
+        </div>
+      </div>
+
+      <!-- Input Monto -->
+      <div class="movement-container">
+
+        <app-amount-input
+          [currency]="currency"
+          [displayAmount]="displayAmount"
+          [invalid]="isInvalid('amount')"
+          [ufValue]="ufValue"
+          [showUFInfo]="currency === 'uf'"
+          [clpAmount]="getCLPAmount()"
+
+          (currencyChange)="setCurrency($event)"
+          (amountChange)="onAmountInput($event)"
+          (blur)="form.get('amount')?.markAsTouched()"
+        />
+
+      </div>
+
+      <!-- Categorias -->
+      <div class="movement-container">
+
+        <app-category-selector 
+          [categories]="categories" 
+          [loading]="loadingCategories"
+          [error]="categoriesError"
+          [selectedId]="form.get('categoryId')?.value || ''"
+          [invalid]="isInvalid('categoryId')" 
+          (select)="selectCategory($event)"
+          />
+
+      </div>
+
+      <!-- Compartido -->
+      <div class="movement-container">
+        <div class="movement-card">
+          <div class="shared-header">
+            <div>
+              <label class="shared-title">
+                Gasto compartido
+              </label>
+              <p class="shared-subtitle">
+                Dividir este gasto con otros
+              </p>
+            </div>
+            <button class="shared-toggle" [class.active]="form.get('isShared')?.value" (click)="toggleShared()">
+              <div class="shared-toggle__circle"></div>
+            </button>
+          </div>
+          <button *ngIf="form.get('isShared')?.value" class="shared-config-btn" (click)="openShared()">
+            {{ sharedData  ? 'Editar división' : 'Configurar división' }}
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+
+    <!-- Ingresos -->
+    <ng-container *ngIf="type == 'income'">
+      <!-- Input Movimiento -->
+      <div class="movement-container">
+        <div class="movement-card">
+          <label class="movement-card__label">
+            Título del movimiento
+          </label>
+          <input class="movement-card__input" type="text" placeholder="Ej: Bono, Sueldo" formControlName="title" />
+        </div>
+      </div>
+
+      <!-- Input Monto -->
+      <div class="movement-container">
+        <div class="movement-card">
+
+          <!-- monto -->
+          <label class="movement-card__label">
+            Monto (CLP)
+          </label>
+          <div class="amount-input">
+
+            <input
+                type="text"
+                inputmode="numeric"
+                class="amount-input__field"
+                (blur)="form.get('amount')?.markAsTouched()"
+                [value]="displayAmount"
+                (input)="onAmountInput($any($event.target).value)"
+              />
+
+            <span class="error-text" *ngIf="isInvalid('amount')">
+              Ingresa un monto válido
+            </span>
+
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Boton Guardar -->
+    <div style="padding-bottom: 25px;" class="movement-container">
+      <button class="submit-btn" (click)="submit()" [disabled]="isSubmitting || form.invalid">
+
+        <ion-spinner *ngIf="isSubmitting"></ion-spinner>
+
+        <span *ngIf="!isSubmitting">
+          {{ type === 'income'
+          ? 'Guardar ingreso'
+          : 'Guardar movimiento'
+          }}
+        </span>
+
+      </button>
+    </div>
+  </div>
+
+</form>

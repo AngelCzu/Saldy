@@ -16,8 +16,8 @@ export class GetOrCreateCurrentPeriodUseCase {
     ) {}
 
   async execute(): Promise<MonthlyPeriod> {
-    const now = this.timeProvider.now();
-    const yearMonth = YearMonth.fromDate(now);
+
+    const yearMonth = this.timeProvider.currentYearMonth();
 
     const id = yearMonth.toString();
 

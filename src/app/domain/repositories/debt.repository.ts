@@ -6,4 +6,5 @@ export interface DebtRepository {
   findById(id: string): Promise<Debt | null>;
   save(debt: Debt): Promise<void>;
   countPending(): Promise<number>;
+  saveMany(debts: Debt[]): Promise<void>;
 }

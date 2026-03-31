@@ -44,4 +44,9 @@ export class CurrencyService {
       ? `${formattedInteger},${decimalPart}`
       : formattedInteger;
   }
+
+  async getUF(): Promise<number> {
+    // temporal (puedes cambiarlo luego por API real)
+    return 37850;
+  }
 }

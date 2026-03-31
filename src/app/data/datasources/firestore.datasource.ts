@@ -30,4 +30,8 @@ userDoc(path: string) {
 
   return doc(this.db, `usuarios/${userId}/${path}`);
 }
+
+getFirestoreInstance() {
+  return this.db;
+}
 }

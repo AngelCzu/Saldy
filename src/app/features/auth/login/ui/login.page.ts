@@ -44,7 +44,7 @@ export class LoginPage implements OnInit {
       // Inicializa en paralelo
       this.sessionService.initSession();
 
-      await this.router.navigateByUrl('/home');
+      await this.router.navigateByUrl('/layout/home');
 
     } catch (error) {
       console.error(error);

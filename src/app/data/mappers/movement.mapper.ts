@@ -15,6 +15,7 @@ export type MovementDocument = {
   goalId?: string | null;
   debtId?: string | null;
   createdAt: Timestamp;
+  isShared?: boolean;
 };
 
 export class MovementMapper {
@@ -33,7 +34,7 @@ export class MovementMapper {
       categoryId: movement.getCategoryId() ?? null,
       goalId: movement.getGoalId() ?? null,   
       debtId: movement.getDebtId() ?? null,
-
+      isShared: movement.isSharedExpense(),
       createdAt: Timestamp.fromDate(movement.getCreatedAt()),
     };
   }
@@ -72,6 +73,7 @@ export class MovementMapper {
       categoryId: data.categoryId ?? undefined,
       goalId: data.goalId ?? undefined,
       debtId: data.debtId ?? undefined,
+      isShared: data.isShared ?? false,
 
       createdAt: data.createdAt.toDate(),
     });

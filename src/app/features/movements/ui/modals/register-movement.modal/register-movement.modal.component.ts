@@ -3,42 +3,60 @@ import { CommonModule, registerLocaleData } from '@angular/common';
 import localeEsCL from '@angular/common/locales/es-CL';
 
 import {
+  AlertController,
+  IonButton,
+  IonButtons,
   IonContent,
+  IonHeader,
   IonIcon,
+  IonTitle,
+  IonToolbar,
+  ModalController,
 } from '@ionic/angular/standalone';
 
 import { firstValueFrom, filter } from 'rxjs';
 import { SessionService } from 'src/app/core/session/session.service';
 
-import { RegisterMovementFacade } from '../../application/register-movement.facade';
+import { RegisterMovementFacade } from '../../../application/register-movement.facade';
 import { initialUiState, setLoading, UiState } from 'src/app/core/state/ui-state';
 import { CategoriesFacade } from 'src/app/features/categories/application/categories.facade';
 import { ToastService } from 'src/app/core/ui/toast.service';
 
-import { RegisterMovementFormComponent } from '../components/register-movement-form/register-movement-form.component';
-import { SubmitMovementData } from '../../models/submit-movement.model';
+import { RegisterMovementFormComponent } from '../../components/register-movement-form/register-movement-form.component';
+import { SubmitMovementData } from '../../../models/submit-movement.model';
 
 registerLocaleData(localeEsCL);
 
 @Component({
-  selector: 'app-register-movement',
+  selector: 'app-register-movement-modal',
   standalone: true,
-  templateUrl: './register-movement.page.html',
-  styleUrls: ['./register-movement.page.scss'],
-  imports: [CommonModule, IonContent, IonIcon, RegisterMovementFormComponent ],
+  templateUrl: './register-movement.modal.component.html',
+  styleUrls: ['./register-movement.modal.component.scss'],
+  imports: [
+    CommonModule,
+    IonContent,
+    IonIcon,
+    RegisterMovementFormComponent,
+    IonButtons,
+    IonButton,
+    IonTitle,
+    IonToolbar,
+    IonHeader
+  ],
 })
-export class RegisterMovementPage {
+export class RegisterMovementModal {
 
-  private toast = inject(ToastService);
-
+  private modalCtrl = inject(ModalController);
   private movementFacade = inject(RegisterMovementFacade);
   private categoriesFacade = inject(CategoriesFacade);
-
   private sessionService = inject(SessionService);
+  private toast = inject(ToastService);
+  private alertCtrl = inject(AlertController);
 
   state = signal<UiState<void>>(initialUiState());
 
-  /* valor UF temporal (solo UI) */
+  isFormDirty = false;
+
   UF_VALUE = 37850;
 
   async ngOnInit() {
@@ -54,19 +72,14 @@ export class RegisterMovementPage {
     );
   }
 
-//==========================
-//=== Controladores UI =====
-//==========================
+  //==========================
+  //======== Loading =========
+  //==========================
 
 
   get categories() {
     return this.categoriesFacade.state().data ?? [];
   }
-
-//==========================
-//==== Loading ====
-//==========================
-
 
   get isSubmitting() {
     return this.state().loading;
@@ -80,10 +93,10 @@ export class RegisterMovementPage {
     return this.categoriesFacade.state().error;
   }
 
-  get skeletonItems() {
-    return Array(8).fill(0);
-  }
 
+  //==========================
+  //======== Submit ==========
+  //==========================
 
   async handleSubmit(data: SubmitMovementData) {
     this.state.update(setLoading);
@@ -93,10 +106,41 @@ export class RegisterMovementPage {
 
       this.toast.success('Movimiento registrado correctamente');
 
+      this.modalCtrl.dismiss(true);
+
     } catch {
       this.toast.error('Error al registrar el movimiento');
     }
   }
 
+  async close() {
+    if (this.isSubmitting) return;
 
+    // Si no hay cambios → cerrar directo
+    if (!this.isFormDirty) {
+      this.modalCtrl.dismiss();
+      return;
+    }
+
+    // Si hay cambios → mostrar alerta
+    const alert = await this.alertCtrl.create({
+      header: 'Salir sin guardar',
+      message: 'Tienes cambios sin guardar. ¿Deseas salir?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Salir',
+          role: 'destructive',
+          handler: () => {
+            this.modalCtrl.dismiss();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
 }

@@ -1,17 +1,19 @@
+<!-- Header -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Registrar movimiento</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
 <ion-content [fullscreen]="true">
 
-  <!-- Header -->
-  <div class="movement-header">
-    <button class="movement-header__back">
-      <ion-icon name="arrow-back-outline"></ion-icon>
-    </button>
-
-    <h1 class="movement-header__title">
-      Registrar movimiento
-    </h1>
-  </div>
-
-  <!-- FORM -->
   <app-register-movement-form
     [categories]="categories"
     [loadingCategories]="isLoadingCategories"
@@ -20,6 +22,7 @@
     [isSubmitting]="isSubmitting"
 
     (submitForm)="handleSubmit($event)"
+    (formDirtyChange)="isFormDirty = $event"
   >
   </app-register-movement-form>
 
